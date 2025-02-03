@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edtCustomerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="采购商名称"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/edtCustomerPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="联系电话"
+        android:inputType="phone"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/edtCustomerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="地址"
+        android:layout_marginBottom="8dp" />
+</LinearLayout>

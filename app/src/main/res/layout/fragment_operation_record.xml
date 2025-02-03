@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#B28C6F"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="操作记录"
+            android:textSize="18sp"
+            android:layout_margin="16dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#B28C6F"
+        style="@style/CustomTabLayout"
+        app:tabMode="fixed"
+        app:tabGravity="fill">
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_stock_records"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="库存记录" />
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_loss_records"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="损耗记录" />
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_exception_records"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="异常记录" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

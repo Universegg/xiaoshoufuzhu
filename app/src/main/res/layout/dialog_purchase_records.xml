@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 供应商显示 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="当前供应商："
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvSelectedSupplier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textSize="16sp"/>
+
+    <!-- 产品名称 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="产品名称："
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/edtProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入产品名称"
+            android:inputType="text"/>
+    </LinearLayout>
+
+    <!-- 批次号 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="批次号："
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/edtBatchNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入批次号"
+            android:inputType="text"/>
+    </LinearLayout>
+
+    <!-- 采购数量 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="采购数量："
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/edtQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入数量"
+            android:inputType="number"/>
+    </LinearLayout>
+
+    <!-- 单价 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="单价："
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/edtUnitPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入单价"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <!-- 应收金额 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="应收金额："
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvReceivablePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¥0.00"
+            android:textColor="#FF5722"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- 实收金额 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="实收金额："
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/edtActualAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="输入实际支付金额"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">xiaoshoufuzhu</string>
+    <string name="prompt_select_purchaser">选择采购商</string>
+    <string-array name="time_period_array">
+        <item>按年</item>
+        <item>按月</item>
+        <item>按日</item>
+    </string-array>
+
+
+    <string-array name="filter_options">
+        <item>显示全部</item>
+        <item>仅显示赊账</item>
+        <item>仅显示结清</item>
+    </string-array>
+</resources>
+

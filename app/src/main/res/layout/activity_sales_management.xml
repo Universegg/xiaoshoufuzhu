@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/yu">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="销售管理"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <!-- TabLayout -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yu"
+        style="@style/CustomTabLayout"
+        app:tabTextAppearance="@style/CustomTabTextAppearance"
+        tools:ignore="MissingClass"
+        app:tabMode="fixed"
+        app:tabGravity="fill">
+    <com.google.android.material.tabs.TabItem
+        android:id="@+id/tab_customer_sales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="采购商销售" />
+    <com.google.android.material.tabs.TabItem
+        android:id="@+id/tab_retailer_sales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="散户销售" />
+    </com.google.android.material.tabs.TabLayout>
+    <!-- ViewPager2 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

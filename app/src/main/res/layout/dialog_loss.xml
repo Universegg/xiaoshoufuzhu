@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="损耗产品数量（斤）："
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/input_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="损耗数量"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="损耗原因："
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/input_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="损耗原因"
+        android:inputType="text" />
+</LinearLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 产品信息 -->
+    <TextView
+        android:id="@+id/tvProductInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="产品名称 - 批次号"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 损耗数量 -->
+    <EditText
+        android:id="@+id/edtLossQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入损耗数量"
+        android:inputType="number"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 损耗原因 -->
+    <EditText
+        android:id="@+id/edtLossReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入损耗原因"
+        android:inputType="text" />
+
+
+</LinearLayout>
