@@ -20,11 +20,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IncomeReportActivity extends AppCompatActivity {
 
     private TextView tvTotalIncome;
+    private TextView tvAccountReceivable;
     private ListView lvIncomeReport;
     private DatePicker datePicker;
     private Spinner spinnerTimePeriod;
@@ -38,6 +41,7 @@ public class IncomeReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_income_report);
 
         tvTotalIncome = findViewById(R.id.tvTotalIncome);
+        tvAccountReceivable = findViewById(R.id.tvAccountReceivable);
         lvIncomeReport = findViewById(R.id.lvIncomeReport);
         datePicker = findViewById(R.id.datePicker);
         spinnerTimePeriod = findViewById(R.id.spinner_time_period);
@@ -87,28 +91,31 @@ public class IncomeReportActivity extends AppCompatActivity {
                     if ("按年".equals(selectedTimePeriod)) {
                         query =
                                 "SELECT products.name AS product_name, products.num AS product_num, " +
-                                        "SUM(sales.total_price) AS total_income " +
-                                        "FROM sales " +
-                                        "JOIN products ON sales.product_id = products.id " +
-                                        "WHERE YEAR(sales.sale_date) = ? " +
+                                        "SUM(CASE WHEN records_customers.state = '结清' THEN records_customers.total_price ELSE 0 END) AS total_income, " +
+                                        "SUM(CASE WHEN records_customers.state = '赊账' THEN records_customers.total_price ELSE 0 END) AS account_receivable " +
+                                        "FROM records_customers " +
+                                        "JOIN products ON records_customers.product_id = products.id " +
+                                        "WHERE YEAR(records_customers.sale_date) = ? " +
                                         "GROUP BY products.name, products.num";
                         dateParam = String.format("%04d", datePicker.getYear());
                     } else if ("按月".equals(selectedTimePeriod)) {
                         query =
                                 "SELECT products.name AS product_name, products.num AS product_num, " +
-                                        "SUM(sales.total_price) AS total_income " +
-                                        "FROM sales " +
-                                        "JOIN products ON sales.product_id = products.id " +
-                                        "WHERE YEAR(sales.sale_date) = ? AND MONTH(sales.sale_date) = ? " +
+                                        "SUM(CASE WHEN records_customers.state = '结清' THEN records_customers.total_price ELSE 0 END) AS total_income, " +
+                                        "SUM(CASE WHEN records_customers.state = '赊账' THEN records_customers.total_price ELSE 0 END) AS account_receivable " +
+                                        "FROM records_customers " +
+                                        "JOIN products ON records_customers.product_id = products.id " +
+                                        "WHERE YEAR(records_customers.sale_date) = ? AND MONTH(records_customers.sale_date) = ? " +
                                         "GROUP BY products.name, products.num";
                         dateParam = String.format("%04d", datePicker.getYear());
                     } else if ("按日".equals(selectedTimePeriod)) {
                         query =
                                 "SELECT products.name AS product_name, products.num AS product_num, " +
-                                        "SUM(sales.total_price) AS total_income " +
-                                        "FROM sales " +
-                                        "JOIN products ON sales.product_id = products.id " +
-                                        "WHERE DATE(sales.sale_date) = ? " +
+                                        "SUM(CASE WHEN records_customers.state = '结清' THEN records_customers.total_price ELSE 0 END) AS total_income, " +
+                                        "SUM(CASE WHEN records_customers.state = '赊账' THEN records_customers.total_price ELSE 0 END) AS account_receivable " +
+                                        "FROM records_customers " +
+                                        "JOIN products ON records_customers.product_id = products.id " +
+                                        "WHERE DATE(records_customers.sale_date) = ? " +
                                         "GROUP BY products.name, products.num";
                         dateParam = String.format("%04d-%02d-%02d", datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
                     }
@@ -120,27 +127,46 @@ public class IncomeReportActivity extends AppCompatActivity {
                     }
                     ResultSet resultSet = statement.executeQuery();
 
+                    Map<String, IncomeRecord> recordMap = new HashMap<>();
                     double totalIncome = 0;
+                    double accountReceivable = 0;
                     incomeRecordList.clear();
                     while (resultSet.next()) {
                         String productName = resultSet.getString("product_name");
                         String productNum = resultSet.getString("product_num");
                         double totalIncomeForProduct = resultSet.getDouble("total_income");
-                        totalIncome += totalIncomeForProduct;
+                        double accountReceivableForProduct = resultSet.getDouble("account_receivable");
 
-                        incomeRecordList.add(new IncomeRecord(productName, productNum, totalIncomeForProduct));
+                        String key = productNum; // 使用productNum作为key
+                        if (recordMap.containsKey(key)) {
+                            IncomeRecord existingRecord = recordMap.get(key);
+                            totalIncomeForProduct += existingRecord.getTotalIncome();
+                            accountReceivableForProduct += existingRecord.getAccountReceivable();
+                        }
+
+                        IncomeRecord incomeRecord = new IncomeRecord(productName, productNum, totalIncomeForProduct, accountReceivableForProduct);
+                        recordMap.put(key, incomeRecord);
+                    }
+
+                    incomeRecordList.addAll(recordMap.values());
+
+                    for (IncomeRecord record : incomeRecordList) {
+                        totalIncome += record.getTotalIncome();
+                        accountReceivable += record.getAccountReceivable();
                     }
 
                     double finalTotalIncome = totalIncome;
+                    double finalAccountReceivable = accountReceivable;
                     runOnUiThread(() -> {
-                        tvTotalIncome.setText("总收入: " + finalTotalIncome);
+                        tvTotalIncome.setText("实际收入: " + finalTotalIncome);
+                        tvAccountReceivable.setText("赊账: " + finalAccountReceivable);
                         incomeReportAdapter.notifyDataSetChanged();
                     });
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     runOnUiThread(() ->
-                            Toast.makeText(IncomeReportActivity.this, "", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(IncomeReportActivity.this, "加载报表数据失败", Toast.LENGTH_SHORT).show());
                 }
             } else {
                 runOnUiThread(() ->

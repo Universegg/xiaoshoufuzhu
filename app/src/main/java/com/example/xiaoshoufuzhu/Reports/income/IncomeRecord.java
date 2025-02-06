@@ -4,11 +4,13 @@ public class IncomeRecord {
     private String productName;
     private String productNum;
     private double totalIncome;
+    private double accountReceivable;
 
-    public IncomeRecord(String productName, String productNum, double totalIncome) {
+    public IncomeRecord(String productName, String productNum, double totalIncome, double accountReceivable) {
         this.productName = productName;
         this.productNum = productNum;
         this.totalIncome = totalIncome;
+        this.accountReceivable = accountReceivable;
     }
 
     public String getProductName() {
@@ -21,5 +23,9 @@ public class IncomeRecord {
 
     public double getTotalIncome() {
         return totalIncome;
+    }
+
+    public double getAccountReceivable() {
+        return accountReceivable;
     }
 }

@@ -9,7 +9,6 @@ public class PurchaseRecord {
     private String purchaseDate;
     private double totalPrice;
 
-    // 修改构造函数（移除 productId 参数，新增 productName 和 batchNo）
     public PurchaseRecord(int id, String productName, String batchNo,
                           int quantity, double price, String purchaseDate,
                           double totalPrice) {

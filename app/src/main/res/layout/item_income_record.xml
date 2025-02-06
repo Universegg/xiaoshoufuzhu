@@ -11,21 +11,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="产品名称"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvProductNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="批号"
         android:textSize="16sp"
-        android:layout_marginEnd="16dp" /> <!-- 添加右边距 -->
+        android:layout_marginEnd="16dp"/>
 
     <TextView
         android:id="@+id/tvTotalIncome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="收入"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvAccountReceivable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"/>
 </LinearLayout>

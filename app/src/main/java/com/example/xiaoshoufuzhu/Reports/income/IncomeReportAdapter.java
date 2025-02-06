@@ -31,12 +31,14 @@ public class IncomeReportAdapter extends ArrayAdapter<IncomeRecord> {
         TextView tvProductName = convertView.findViewById(R.id.tvProductName);
         TextView tvProductNum = convertView.findViewById(R.id.tvProductNum);
         TextView tvTotalIncome = convertView.findViewById(R.id.tvTotalIncome);
+        TextView tvAccountReceivable = convertView.findViewById(R.id.tvAccountReceivable);
 
         // 设置 TextView 的内容
         if (incomeRecord != null) {
             tvProductName.setText(incomeRecord.getProductName());
             tvProductNum.setText(incomeRecord.getProductNum());
             tvTotalIncome.setText(String.valueOf(incomeRecord.getTotalIncome()));
+            tvAccountReceivable.setText(String.valueOf(incomeRecord.getAccountReceivable()));
         }
 
         // 返回显示的视图

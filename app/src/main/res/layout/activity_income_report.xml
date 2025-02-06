@@ -29,17 +29,28 @@
         android:calendarViewShown="false"
         android:datePickerMode="spinner" />
 
-    <!-- 显示总收入的 TextView -->
+    <!-- 显示实际收入的 TextView -->
     <TextView
         android:id="@+id/tvTotalIncome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="实际收入: " />
+
+    <!-- 显示赊账的 TextView -->
+    <TextView
+        android:id="@+id/tvAccountReceivable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:text="总收入: " />
+        android:text="赊账: " />
 
     <!-- 表头布局 -->
     <LinearLayout
@@ -71,6 +82,14 @@
             android:text="收入"
             android:textStyle="bold"
             android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="赊账"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"/>
     </LinearLayout>
 
     <!-- 用于显示报表数据的 ListView -->
