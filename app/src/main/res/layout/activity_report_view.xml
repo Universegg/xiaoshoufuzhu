@@ -1,50 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Navigation buttons -->
+    <!-- 横向三等分背景颜色 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <!-- 第一部分背景 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#919f7d" />
+
+        <!-- 第二部分背景 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#e5d8c8" />
+
+        <!-- 第三部分背景 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#ffefd6" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/yu"
+        android:layout_marginBottom="10dp" >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            app:srcCompat="@drawable/back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="查看报表"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
 
         <Button
             android:id="@+id/btnIncomeReport"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="收入报表"
-            android:layout_marginBottom="8dp" />
+            android:background="@drawable/radius_border"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_marginBottom="10dp" />
 
         <Button
             android:id="@+id/btnExpenseReport"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="支出报表"
-            android:layout_marginBottom="8dp" />
+            android:background="@drawable/radius_border"
+            android:layout_below="@+id/btnIncomeReport"
+            android:layout_marginBottom="10dp" />
 
         <Button
             android:id="@+id/btnFinancialReport"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="财务报表"
-            android:layout_marginBottom="8dp" />
+            android:background="@drawable/radius_border"
+            android:layout_below="@+id/btnExpenseReport"
+            android:layout_marginBottom="10dp"/>
 
         <Button
             android:id="@+id/btnProductLossReport"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="产品损耗报表"
-            android:layout_marginBottom="8dp" />
+            android:background="@drawable/radius_border"
+            android:layout_below="@+id/btnFinancialReport"
+            android:layout_marginBottom="10dp" />
 
         <Button
             android:id="@+id/btnCustomerReport"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="采购商报表"
-            android:layout_marginBottom="8dp" />
-    </LinearLayout>
-</LinearLayout>
+            android:background="@drawable/radius_border"
+            android:layout_below="@+id/btnProductLossReport"
+            android:layout_marginBottom="10dp" />
+</RelativeLayout>

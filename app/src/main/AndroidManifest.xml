@@ -45,6 +45,7 @@
         <activity android:name=".Reports.expense.ExpenseReportActivity" />
         <activity android:name=".Reports.financial.FinancialReportActivity" />
         <activity android:name=".Reports.loss.ProductLossReportActivity" />
+        <activity android:name=".Reports.ProductDetailActivity" />
         <activity android:name=".Reports.customer.CustomerReportActivity" />
     </application>
 

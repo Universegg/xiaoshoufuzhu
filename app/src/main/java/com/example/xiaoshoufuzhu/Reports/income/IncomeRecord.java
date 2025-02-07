@@ -28,4 +28,12 @@ public class IncomeRecord {
     public double getAccountReceivable() {
         return accountReceivable;
     }
+
+    public void setTotalIncome(double totalIncome) {
+        this.totalIncome = totalIncome;
+    }
+
+    public void setAccountReceivable(double accountReceivable) {
+        this.accountReceivable = accountReceivable;
+    }
 }
