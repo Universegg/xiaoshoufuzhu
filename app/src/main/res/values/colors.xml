@@ -10,4 +10,10 @@
     <color name="yu">#70695D</color>
     <color name="mi">#FFFFF1</color>
     <color name="ro">#F2C5A1</color>
+    <color name="gray">#e0e0e0</color>
+
+
+    <color name="textPrimary">#212121</color>
+    <color name="itemBackground">#FFFFFF</color>
+    <color name="borderColor">#E0E0E0</color>
 </resources>

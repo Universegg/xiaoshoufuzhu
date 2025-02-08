@@ -3,14 +3,18 @@ package com.example.xiaoshoufuzhu.Reports;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.R;
@@ -39,6 +43,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Button btnCustomerDetails;
     private LinearLayout llReceivableDetails;
     private LinearLayout llCustomerDetails;
+    private ScrollView svCustomerDetails;
+    private ScrollView svReceivableDetails; // 新增的ScrollView
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -59,6 +65,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnCustomerDetails = findViewById(R.id.btnCustomerDetails);
         llReceivableDetails = findViewById(R.id.llReceivableDetails);
         llCustomerDetails = findViewById(R.id.llCustomerDetails);
+        svCustomerDetails = findViewById(R.id.svCustomerDetails);
+        svReceivableDetails = findViewById(R.id.svReceivableDetails);
 
         // 获取传递过来的产品名称和编号
         String productName = getIntent().getStringExtra("productName");
@@ -89,20 +97,20 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
 
                 String query = "SELECT " +
-                        "p.name AS product_name, p.num AS product_num, " +
+                        "p.name AS product_name, p.num AS product_num, p.price AS product_price, " +
                         "rc.id AS rc_id, s.id AS s_id, " +
                         "SUM(CASE WHEN rc.state = '结清' THEN rc.quantity ELSE 0 END) AS customer_quantity, " +
                         "SUM(CASE WHEN rc.state = '结清' THEN rc.total_price ELSE 0 END) AS customer_total_price, " +
                         "SUM(CASE WHEN rc.state = '赊账' THEN rc.total_price ELSE 0 END) AS receivable_amount, " +
                         "SUM(s.quantity) AS sales_quantity, " +
                         "SUM(s.total_price) AS sales_total_price, " +
-                        "SUM(CASE WHEN rc.state = '赊账' THEN rc.total_price ELSE 0 END) AS total_receivable, " +
+                        "SUM(rc.quantity + s.quantity) * p.price AS total_receivable, " +
                         "SUM(CASE WHEN rc.state = '结清' THEN rc.total_price ELSE 0 END) + SUM(s.total_price) AS total_income " +
                         "FROM products p " +
                         "LEFT JOIN records_customers rc ON p.id = rc.product_id " +
                         "LEFT JOIN sales s ON p.id = s.product_id " +
                         "WHERE p.name = ? AND p.num = ? " +
-                        "GROUP BY p.name, p.num, rc.id, s.id";
+                        "GROUP BY p.name, p.num, p.price, rc.id, s.id";
 
                 statement = connection.prepareStatement(query);
                 statement.setString(1, productName);
@@ -117,6 +125,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 double salesTotalPrice = 0;
                 double totalReceivable = 0;
                 double totalIncome = 0;
+                double productPrice = 0;
 
                 Set<Integer> processedRcIds = new HashSet<>();
                 Set<Integer> processedSIds = new HashSet<>();
@@ -124,6 +133,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 while (resultSet.next()) {
                     int rcId = resultSet.getInt("rc_id");
                     int sId = resultSet.getInt("s_id");
+                    productPrice = resultSet.getDouble("product_price");
 
                     if (!processedRcIds.contains(rcId)) {
                         customerQuantity += resultSet.getDouble("customer_quantity");
@@ -147,20 +157,20 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 double finalCustomerQuantity = customerQuantity;
                 double finalCustomerTotalPrice = customerTotalPrice;
-                double finalReceivableAmount = receivableAmount;
                 double finalSalesQuantity = salesQuantity;
                 double finalSalesTotalPrice = salesTotalPrice;
-                double finalTotalReceivable = totalReceivable;
+                double finalTotalReceivable = receivableAmount + totalIncome; // Change here
                 double finalTotalIncome = totalIncome;
 
+                double finalReceivableAmount = receivableAmount;
                 runOnUiThread(() -> {
-                    tvCustomerQuantity.setText(String.format("采购商购买数量: %.2f", finalCustomerQuantity));
-                    tvCustomerTotalPrice.setText(String.format("采购商购买总金额: %.2f", finalCustomerTotalPrice));
-                    tvReceivableAmount.setText(String.format("赊账金额: %.2f", finalReceivableAmount));
-                    tvSalesQuantity.setText(String.format("散户购买数量: %.2f", finalSalesQuantity));
-                    tvSalesTotalPrice.setText(String.format("散户购买总金额: %.2f", finalSalesTotalPrice));
-                    tvTotalReceivable.setText(String.format("应收金额: %.2f", finalTotalReceivable));
-                    tvTotalIncome.setText(String.format("实收金额: %.2f", finalTotalIncome));
+                    tvCustomerQuantity.setText(String.format("采购商销售总数: %.2f（斤）", finalCustomerQuantity));
+                    tvCustomerTotalPrice.setText(String.format("采购商销售总金额: %.2f（元）", finalCustomerTotalPrice));
+                    tvReceivableAmount.setText(String.format("赊账金额: %.2f（元）", finalReceivableAmount));
+                    tvSalesQuantity.setText(String.format("散户销售总数: %.2f（斤）", finalSalesQuantity));
+                    tvSalesTotalPrice.setText(String.format("散户销售总金额: %.2f（元）", finalSalesTotalPrice));
+                    tvTotalReceivable.setText(String.format("应收金额: %.2f（元）", finalTotalReceivable));
+                    tvTotalIncome.setText(String.format("实收金额: %.2f（元）", finalTotalIncome));
                 });
 
             } catch (SQLException e) {
@@ -182,20 +192,20 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void toggleReceivableDetails(String productName, String productNum) {
-        if (llReceivableDetails.getVisibility() == View.VISIBLE) {
-            llReceivableDetails.setVisibility(View.GONE);
+        if (svReceivableDetails.getVisibility() == View.VISIBLE) {
+            svReceivableDetails.setVisibility(View.GONE);
         } else {
             loadReceivableDetails(productName, productNum);
-            llReceivableDetails.setVisibility(View.VISIBLE);
+            svReceivableDetails.setVisibility(View.VISIBLE);
         }
     }
 
     private void toggleCustomerDetails(String productName, String productNum) {
-        if (llCustomerDetails.getVisibility() == View.VISIBLE) {
-            llCustomerDetails.setVisibility(View.GONE);
+        if (svCustomerDetails.getVisibility() == View.VISIBLE) {
+            svCustomerDetails.setVisibility(View.GONE);
         } else {
             loadCustomerDetails(productName, productNum);
-            llCustomerDetails.setVisibility(View.VISIBLE);
+            svCustomerDetails.setVisibility(View.VISIBLE);
         }
     }
 
@@ -212,7 +222,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     return;
                 }
 
-                String query = "SELECT c.name AS customer_name, rc.total_price AS receivable_amount " +
+                String query = "SELECT c.name AS customer_name, rc.quantity AS quantity, rc.total_price AS receivable_amount " +
                         "FROM records_customers rc " +
                         "LEFT JOIN customers c ON rc.cid = c.id " +
                         "LEFT JOIN products p ON rc.product_id = p.id " +
@@ -228,9 +238,10 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 while (resultSet.next()) {
                     String customerName = resultSet.getString("customer_name");
+                    int quantity = resultSet.getInt("quantity");
                     double receivableAmount = resultSet.getDouble("receivable_amount");
 
-                    receivableDetails.add(new ReceivableDetail(customerName, receivableAmount));
+                    receivableDetails.add(new ReceivableDetail(customerName, quantity, receivableAmount));
                 }
 
                 runOnUiThread(() -> populateReceivableDetails(receivableDetails));
@@ -312,7 +323,15 @@ public class ProductDetailActivity extends AppCompatActivity {
         llReceivableDetails.removeAllViews();
         for (ReceivableDetail detail : receivableDetails) {
             TextView tvReceivableDetail = new TextView(this);
-            tvReceivableDetail.setText(String.format("%s: %.2f", detail.customerName, detail.receivableAmount));
+            tvReceivableDetail.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+            tvReceivableDetail.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            tvReceivableDetail.setTextColor(ContextCompat.getColor(this, R.color.textPrimary));
+            tvReceivableDetail.setPadding(dpToPx(16), dpToPx(12), dpToPx(16), dpToPx(12));
+            tvReceivableDetail.setBackgroundResource(R.drawable.bg_detail_item);
+            tvReceivableDetail.setText(String.format("▫ %s\n   购买数量：%d斤\n   赊账金额：¥%.2f", detail.customerName, detail.quantity, detail.receivableAmount));
             llReceivableDetails.addView(tvReceivableDetail);
         }
     }
@@ -321,9 +340,25 @@ public class ProductDetailActivity extends AppCompatActivity {
         llCustomerDetails.removeAllViews();
         for (CustomerDetail detail : customerDetails) {
             TextView tvCustomerDetail = new TextView(this);
-            tvCustomerDetail.setText(String.format("%s: 购买数量: %d, 购买金额: %.2f", detail.customerName, detail.quantity, detail.amount));
+            tvCustomerDetail.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+            tvCustomerDetail.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            tvCustomerDetail.setTextColor(ContextCompat.getColor(this, R.color.textPrimary));
+            tvCustomerDetail.setPadding(dpToPx(16), dpToPx(12), dpToPx(16), dpToPx(12));
+            tvCustomerDetail.setBackgroundResource(R.drawable.bg_detail_item);
+            tvCustomerDetail.setText(String.format("▫ %s\n   购买数量：%d斤\n   总金额：¥%.2f", detail.customerName, detail.quantity, detail.amount));
             llCustomerDetails.addView(tvCustomerDetail);
         }
+    }
+
+    private int dpToPx(int dp) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                getResources().getDisplayMetrics()
+        );
     }
 
     private void showError(String message) {
@@ -333,10 +368,12 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private static class ReceivableDetail {
         String customerName;
+        int quantity;
         double receivableAmount;
 
-        ReceivableDetail(String customerName, double receivableAmount) {
+        ReceivableDetail(String customerName, int quantity, double receivableAmount) {
             this.customerName = customerName;
+            this.quantity = quantity;
             this.receivableAmount = receivableAmount;
         }
     }

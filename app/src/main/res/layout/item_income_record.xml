@@ -45,7 +45,7 @@
             android:textSize="16sp"
             android:layout_marginStart="16dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="38dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp">
@@ -53,11 +53,11 @@
                 android:id="@+id/ivInfo"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:gravity="center_horizontal"
+                android:layout_centerInParent="true"
                 android:src="@drawable/information"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="产品详情"/>
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
