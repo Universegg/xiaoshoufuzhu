@@ -1,9 +1,12 @@
 package com.example.xiaoshoufuzhu.Reports.expense;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,134 +21,238 @@ import com.example.xiaoshoufuzhu.R;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import android.util.Log;
+
+import java.lang.ref.WeakReference;
+
 
 public class ExpenseReportActivity extends AppCompatActivity {
 
     private TextView tvTotalExpense;
+    private TextView tvTotalFreight;
     private ListView lvExpenseReport;
-    private DatePicker datePicker;
+    private ImageView ivDatePicker;
     private Spinner spinnerTimePeriod;
-    private ExpenseReportAdapter expenseReportAdapter;
-    private List<ExpenseRecord> expenseRecordList;
+    private ExpenseReportAdapter expenseAdapter;
+    private List<ExpenseRecord> expenseRecords;
     private String selectedTimePeriod;
+    private Calendar selectedDate;
+
+    private static final String TAG = "ExpenseReportActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense_report);
 
+        initViews();
+        setupAdapters();
+        setupListeners();
+        loadExpenseReport();
+    }
+
+    private void initViews() {
         tvTotalExpense = findViewById(R.id.tvTotalExpense);
+        tvTotalFreight = findViewById(R.id.tvTotalFreight);
         lvExpenseReport = findViewById(R.id.lvExpenseReport);
-        datePicker = findViewById(R.id.datePicker);
+        ivDatePicker = findViewById(R.id.ivDatePicker);
         spinnerTimePeriod = findViewById(R.id.spinner_time_period);
+    }
 
-        expenseRecordList = new ArrayList<>();
-        expenseReportAdapter = new ExpenseReportAdapter(this, expenseRecordList);
-        lvExpenseReport.setAdapter(expenseReportAdapter);
+    private void setupAdapters() {
+        expenseRecords = new ArrayList<>();
+        expenseAdapter = new ExpenseReportAdapter(this, expenseRecords);
+        lvExpenseReport.setAdapter(expenseAdapter);
+    }
 
-        // 设置 Spinner 的监听器
+    private void setupListeners() {
+        selectedDate = Calendar.getInstance();
+
         spinnerTimePeriod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // 获取选择的时间段类型
                 selectedTimePeriod = (String) parent.getItemAtPosition(position);
                 loadExpenseReport();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // 默认选择按日
                 selectedTimePeriod = "按日";
                 loadExpenseReport();
             }
         });
 
-        // 设置日期选择器的监听器
-        datePicker.init(
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
-                (view, year, monthOfYear, dayOfMonth) -> loadExpenseReport()
-        );
+        ivDatePicker.setOnClickListener(v -> showDatePickerDialog());
+    }
 
-        // 初次加载报表数据
-        loadExpenseReport();
+    private void showDatePickerDialog() {
+        int year = selectedDate.get(Calendar.YEAR);
+        int month = selectedDate.get(Calendar.MONTH);
+        int day = selectedDate.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                ExpenseReportActivity.this,
+                (view, year1, monthOfYear, dayOfMonth) -> {
+                    selectedDate.set(year1, monthOfYear, dayOfMonth);
+                    loadExpenseReport();
+                },
+                year, month, day
+        );
+        datePickerDialog.show();
     }
 
     private void loadExpenseReport() {
-        new Thread(() -> {
-            Connection connection = DatabaseHelper.getConnection();
-            if (connection != null) {
-                try {
-                    String query = "";
-                    String dateParam = "";
+        new Thread(new LoadTask(this, buildQuery())).start();
+    }
 
-                    // 根据选择的时间段类型构建查询语句
-                    if ("按年".equals(selectedTimePeriod)) {
-                        query =
-                                "SELECT products.name AS product_name, products.num AS product_num, " +
-                                        "SUM(records_suppliers.total_price) AS total_expense " +
-                                        "FROM records_suppliers " +
-                                        "JOIN products ON records_suppliers.product_id = products.id " +
-                                        "WHERE YEAR(records_suppliers.purchase_date) = ? " +
-                                        "GROUP BY products.name, products.num";
-                        dateParam = String.format("%04d", datePicker.getYear());
-                    } else if ("按月".equals(selectedTimePeriod)) {
-                        query =
-                                "SELECT products.name AS product_name, products.num AS product_num, " +
-                                        "SUM(records_suppliers.total_price) AS total_expense " +
-                                        "FROM records_suppliers " +
-                                        "JOIN products ON records_suppliers.product_id = products.id " +
-                                        "WHERE YEAR(records_suppliers.purchase_date) = ? AND MONTH(records_suppliers.purchase_date) = ? " +
-                                        "GROUP BY products.name, products.num";
-                        dateParam = String.format("%04d-%02d", datePicker.getYear(), datePicker.getMonth() + 1);
-                    } else if ("按日".equals(selectedTimePeriod)) {
-                        query =
-                                "SELECT products.name AS product_name, products.num AS product_num, " +
-                                        "SUM(records_suppliers.total_price) AS total_expense " +
-                                        "FROM records_suppliers " +
-                                        "JOIN products ON records_suppliers.product_id = products.id " +
-                                        "WHERE DATE(records_suppliers.purchase_date) = ? " +
-                                        "GROUP BY products.name, products.num";
-                        dateParam = String.format("%04d-%02d-%02d", datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
-                    }
+    private QueryInfo buildQuery() {
+        int year = selectedDate.get(Calendar.YEAR);
+        int month = selectedDate.get(Calendar.MONTH) + 1;
+        int day = selectedDate.get(Calendar.DAY_OF_MONTH);
 
-                    PreparedStatement statement = connection.prepareStatement(query);
-                    statement.setString(1, dateParam);
-                    if ("按月".equals(selectedTimePeriod)) {
-                        statement.setString(2, String.format("%02d", datePicker.getMonth() + 1));
-                    }
-                    ResultSet resultSet = statement.executeQuery();
+        String baseQuery = "SELECT name, num, " +
+                "SUM(total_price) AS total_expense, " +
+                "SUM(freight) AS total_freight " +
+                "FROM records_suppliers " +
+                "WHERE state = '1' AND %s " +
+                "GROUP BY name, num";
 
-                    double totalExpense = 0;
-                    expenseRecordList.clear();
-                    while (resultSet.next()) {
-                        String productName = resultSet.getString("product_name");
-                        String productNum = resultSet.getString("product_num");
-                        double totalExpenseForProduct = resultSet.getDouble("total_expense");
-                        totalExpense += totalExpenseForProduct;
+        List<Object> params = new ArrayList<>();
+        String dateCondition;
 
-                        expenseRecordList.add(new ExpenseRecord(productName, productNum, totalExpenseForProduct));
-                    }
+        if (selectedTimePeriod == null) selectedTimePeriod = "按日";
 
-                    double finalTotalExpense = totalExpense;
-                    runOnUiThread(() -> {
-                        tvTotalExpense.setText("总支出: " + finalTotalExpense);
-                        expenseReportAdapter.notifyDataSetChanged();
-                    });
+        switch (selectedTimePeriod) {
+            case "按年":
+                dateCondition = "YEAR(purchase_date) = ?";
+                params.add(year);
+                break;
+            case "按月":
+                dateCondition = "YEAR(purchase_date) = ? AND MONTH(purchase_date) = ?";
+                params.add(year);
+                params.add(month);
+                break;
+            default:
+                String dateStr = String.format("%04d-%02d-%02d", year, month, day);
+                dateCondition = "DATE(purchase_date) = ?";
+                params.add(dateStr);
+                break;
+        }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() ->
-                            Toast.makeText(ExpenseReportActivity.this, "", Toast.LENGTH_SHORT).show());
+        return new QueryInfo(String.format(baseQuery, dateCondition), params);
+    }
+
+    private static class LoadTask implements Runnable {
+        private final WeakReference<ExpenseReportActivity> activityRef;
+        private final QueryInfo queryInfo;
+
+        LoadTask(ExpenseReportActivity activity, QueryInfo queryInfo) {
+            this.activityRef = new WeakReference<>(activity);
+            this.queryInfo = queryInfo;
+        }
+
+        @Override
+        public void run() {
+            ExpenseReportActivity activity = activityRef.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            Connection connection = null;
+            PreparedStatement statement = null;
+            ResultSet resultSet = null;
+
+            try {
+                connection = DatabaseHelper.getConnection();
+                if (connection == null) {
+                    activity.showError("数据库连接失败");
+                    return;
                 }
-            } else {
-                runOnUiThread(() ->
-                        Toast.makeText(ExpenseReportActivity.this, "数据库连接失败", Toast.LENGTH_SHORT).show());
+
+                statement = connection.prepareStatement(queryInfo.sql);
+                for (int i = 0; i < queryInfo.params.size(); i++) {
+                    Object param = queryInfo.params.get(i);
+                    if (param instanceof Integer) {
+                        statement.setInt(i + 1, (Integer) param);
+                    } else {
+                        statement.setString(i + 1, param.toString());
+                    }
+                }
+
+                resultSet = statement.executeQuery();
+
+                List<ExpenseRecord> records = new ArrayList<>();
+                double totalExpense = 0;
+                double totalFreight = 0;
+
+                while (resultSet.next()) {
+                    String productName = resultSet.getString("name");
+                    String batchNumber = resultSet.getString("num");
+                    double expense = resultSet.getDouble("total_expense");
+                    double freight = resultSet.getDouble("total_freight");
+
+                    records.add(new ExpenseRecord(productName, batchNumber, expense, freight));
+                    totalExpense += expense;
+                    totalFreight += freight;
+
+                    Log.d(TAG, "Loaded record: " + productName + " | " + batchNumber
+                            + " | Expense: " + expense + " | Freight: " + freight);
+                }
+
+                activity.updateUI(records, totalExpense, totalFreight);
+
+            } catch (SQLException e) {
+                activity.showError("数据库查询异常");
+                Log.e(TAG, "SQL Error: ", e);
+            } catch (Exception e) {
+                activity.showError("系统错误");
+                Log.e(TAG, "General Error: ", e);
+            } finally {
+                try {
+                    if (resultSet != null) resultSet.close();
+                    if (statement != null) statement.close();
+                    if (connection != null) connection.close();
+                } catch (Exception e) {
+                    Log.e(TAG, "Resource close error: ", e);
+                }
             }
-        }).start();
+        }
+    }
+
+    private void updateUI(List<ExpenseRecord> records, double totalExpense, double totalFreight) {
+        runOnUiThreadIfAlive(() -> {
+            expenseRecords.clear();
+            expenseRecords.addAll(records);
+            tvTotalExpense.setText(String.format("总支出: %.2f（元）", totalExpense));
+            tvTotalFreight.setText(String.format("总运费: %.2f（元）", totalFreight));
+            expenseAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void runOnUiThreadIfAlive(Runnable action) {
+        if (!isFinishing()) {
+            runOnUiThread(() -> {
+                if (!isFinishing()) {
+                    action.run();
+                }
+            });
+        }
+    }
+
+    private void showError(String message) {
+        runOnUiThreadIfAlive(() ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show());
+    }
+
+    private static class QueryInfo {
+        final String sql;
+        final List<Object> params;
+
+        QueryInfo(String sql, List<Object> params) {
+            this.sql = sql;
+            this.params = params;
+        }
     }
 }

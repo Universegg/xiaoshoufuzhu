@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
+    <!-- 标题 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#B28C6F"
+        android:background="#919f7d"
         android:orientation="horizontal">
 
         <TextView
@@ -24,14 +24,14 @@
             android:textSize="20sp"
             android:textColor="@color/white"
             android:textStyle="bold"/>
-
     </LinearLayout>
 
+    <!-- 时间段选择器 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#B28C6F"
+        android:background="#919f7d"
         android:gravity="center">
 
         <TextView
@@ -42,8 +42,6 @@
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:textStyle="bold"/>
-
-        <!-- 时间段选择器 -->
         <Spinner
             android:id="@+id/spinner_time_period"
             android:layout_width="wrap_content"
@@ -58,30 +56,42 @@
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="32dp"
+            android:layout_height="32dp">
+            <ImageView
+                android:id="@+id/ivDatePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/date"
+                android:contentDescription="选择日期" />
+        </LinearLayout>
     </LinearLayout>
 
-
-    <!-- 日期选择器 -->
-    <DatePicker
-        android:id="@+id/datePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner" />
-
-    <!-- 显示总支出的 TextView -->
+    <!-- 总支出和总运费 -->
     <TextView
         android:id="@+id/tvTotalExpense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="总支出: 0.00元" />
+
+    <TextView
+        android:id="@+id/tvTotalFreight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:text="总支出: " />
+        android:text="总运费: 0.00元" />
 
-    <!-- 表头布局 -->
+    <!-- 表头 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,22 +108,39 @@
             android:textSize="16sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="批号"
             android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginEnd="16dp" />
+            android:textSize="16sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="支出"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="运费"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="详细"
             android:textStyle="bold"
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- 用于显示报表数据的 ListView -->
+    <!-- 列表 -->
     <ListView
         android:id="@+id/lvExpenseReport"
         android:layout_width="match_parent"
