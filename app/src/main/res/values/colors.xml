@@ -16,4 +16,7 @@
     <color name="textPrimary">#212121</color>
     <color name="itemBackground">#FFFFFF</color>
     <color name="borderColor">#E0E0E0</color>
+
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="weather_blue">#2196F3</color>
 </resources>

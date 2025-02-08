@@ -68,7 +68,8 @@
                 android:src="@drawable/weather"
                 android:scaleType="fitXY"
                 android:layout_marginTop="0dp"/>
-    </RelativeLayout>
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -76,7 +77,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/relativeLayout2"
             android:layout_marginTop="0dp"
-
             android:padding="16dp">
 
             <LinearLayout

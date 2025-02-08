@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@drawable/bg_gradient_weather">
+
+        <!-- Weather icon and temperature -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/radius_border"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:id="@+id/ivDetailIcon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_sunny"/>
+
+            <TextView
+                android:id="@+id/tvTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="32sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:alignmentMode="alignMargins"
+            android:columnOrderPreserved="false"
+            android:padding="8dp"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="体感温度:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvFeelsLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="天气状况:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvWeatherStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="风向:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvWindDir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="风速:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvWindSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="湿度:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvHumidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="降水量:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvPrecip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="气压:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvPressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="能见度:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvVisibility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="云量:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvCloud"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="露点:"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvDewPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+        </GridLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

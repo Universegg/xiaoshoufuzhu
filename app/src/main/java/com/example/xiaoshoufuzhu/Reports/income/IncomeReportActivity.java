@@ -263,8 +263,8 @@ public class IncomeReportActivity extends AppCompatActivity {
             for (IncomeRecord record : records) {
                 incomeRecordList.add(record);
             }
-            tvTotalIncome.setText(String.format("实际收入: %.2f", totalIncome));
-            tvAccountReceivable.setText(String.format("赊账: %.2f", accountReceivable));
+            tvTotalIncome.setText(String.format("实际收入: %.2f（元）", totalIncome));
+            tvAccountReceivable.setText(String.format("赊账（未回款）: %.2f（元）", accountReceivable));
             incomeReportAdapter.notifyDataSetChanged();
         });
     }

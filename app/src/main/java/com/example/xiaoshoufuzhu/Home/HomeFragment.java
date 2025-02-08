@@ -2,6 +2,8 @@ package com.example.xiaoshoufuzhu.Home;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +44,7 @@ public class HomeFragment extends Fragment {
     private static final String BASE_URL_CITY = "https://geoapi.qweather.com/";
     private static final String BASE_URL_WEATHER = "https://devapi.qweather.com/";
 
-    private String weatherInfo = "";
+    private WeatherResponse weatherResponse;
 
     @Nullable
     @Override
@@ -63,58 +65,38 @@ public class HomeFragment extends Fragment {
         weatherWarningLayout = view.findViewById(R.id.weatherWarningLayout);
 
         // 设置框架点击事件
-        framePriceLossManagement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 跳转到价格与损耗管理模块
-                Intent intent = new Intent(getActivity(), PriceLossManagementActivity.class);
-                startActivity(intent);
-            }
+        framePriceLossManagement.setOnClickListener(v -> {
+            // 跳转到价格与损耗管理模块
+            Intent intent = new Intent(getActivity(), PriceLossManagementActivity.class);
+            startActivity(intent);
         });
 
-        frameSalesManagement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 跳转到销售管理模块
-                Intent intent = new Intent(getActivity(), SalesManagementActivity.class);
-                startActivity(intent);
-            }
+        frameSalesManagement.setOnClickListener(v -> {
+            // 跳转到销售管理模块
+            Intent intent = new Intent(getActivity(), SalesManagementActivity.class);
+            startActivity(intent);
         });
 
-        framePurchaseManagement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 跳转到进货管理模块
-                Intent intent = new Intent(getActivity(), SupplierSalesActivity.class);
-                startActivity(intent);
-            }
+        framePurchaseManagement.setOnClickListener(v -> {
+            // 跳转到进货管理模块
+            Intent intent = new Intent(getActivity(), SupplierSalesActivity.class);
+            startActivity(intent);
         });
 
-        frameReportView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 跳转到报表查看模块
-                Intent intent = new Intent(getActivity(), ReportViewActivity.class);
-                startActivity(intent);
-            }
+        frameReportView.setOnClickListener(v -> {
+            // 跳转到报表查看模块
+            Intent intent = new Intent(getActivity(), ReportViewActivity.class);
+            startActivity(intent);
         });
 
-        frameSalesPriceAnalysis.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 跳转到销量与价格动态分析模块
-                Intent intent = new Intent(getActivity(), SalesPriceAnalysisActivity.class);
-                startActivity(intent);
-            }
+        frameSalesPriceAnalysis.setOnClickListener(v -> {
+            // 跳转到销量与价格动态分析模块
+            Intent intent = new Intent(getActivity(), SalesPriceAnalysisActivity.class);
+            startActivity(intent);
         });
 
         // 设置tvWeather和ivWeatherIcon点击事件
-        View.OnClickListener weatherClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showWeatherDialog(weatherInfo);
-            }
-        };
+        View.OnClickListener weatherClickListener = v -> showWeatherDialog(weatherResponse);
         tvWeather.setOnClickListener(weatherClickListener);
         ivWeatherIcon.setOnClickListener(weatherClickListener);
 
@@ -173,8 +155,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    WeatherResponse weatherResponse = response.body();
-                    weatherInfo = "温度: " + weatherResponse.getNow().getTemp() + "°C" +
+                    weatherResponse = response.body();
+                    String weatherText = "温度: " + weatherResponse.getNow().getTemp() + "°C" +
                             "\n体感温度: " + weatherResponse.getNow().getFeelsLike() + "°C" +
                             "\n天气状况: " + weatherResponse.getNow().getText() +
                             "\n风向: " + weatherResponse.getNow().getWindDir() +
@@ -240,11 +222,57 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void showWeatherDialog(String weatherInfo) {
+    private void showWeatherDialog(WeatherResponse weatherResponse) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("天气详情");
-        builder.setMessage(weatherInfo);
-        builder.setPositiveButton("确定", null);
-        builder.show();
+        View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_weather_detail, null);
+        builder.setView(dialogView);
+
+        // 初始化视图
+        ImageView ivIcon = dialogView.findViewById(R.id.ivDetailIcon);
+        TextView tvTemp = dialogView.findViewById(R.id.tvTemp);
+        TextView tvFeelsLike = dialogView.findViewById(R.id.tvFeelsLike);
+        TextView tvWeatherStatus = dialogView.findViewById(R.id.tvWeatherStatus);
+        TextView tvWindDir = dialogView.findViewById(R.id.tvWindDir);
+        TextView tvWindSpeed = dialogView.findViewById(R.id.tvWindSpeed);
+        TextView tvHumidity = dialogView.findViewById(R.id.tvHumidity);
+        TextView tvPrecip = dialogView.findViewById(R.id.tvPrecip);
+        TextView tvPressure = dialogView.findViewById(R.id.tvPressure);
+        TextView tvVisibility = dialogView.findViewById(R.id.tvVisibility);
+        TextView tvCloud = dialogView.findViewById(R.id.tvCloud);
+        TextView tvDewPoint = dialogView.findViewById(R.id.tvDewPoint);
+
+        // 设置天气图标
+        setWeatherIcon(ivIcon, weatherResponse.getNow().getText());
+
+        // 填充数据
+        tvTemp.setText(weatherResponse.getNow().getTemp() + "°C");
+        tvFeelsLike.setText(weatherResponse.getNow().getFeelsLike() + "°C");
+        tvWeatherStatus.setText(weatherResponse.getNow().getText());
+        tvWindDir.setText(weatherResponse.getNow().getWindDir());
+        tvWindSpeed.setText(weatherResponse.getNow().getWindSpeed() + " km/h");
+        tvHumidity.setText(weatherResponse.getNow().getHumidity() + "%");
+        tvPrecip.setText(weatherResponse.getNow().getPrecip() + " mm");
+        tvPressure.setText(weatherResponse.getNow().getPressure() + " hPa");
+        tvVisibility.setText(weatherResponse.getNow().getVis() + " km");
+        tvCloud.setText(weatherResponse.getNow().getCloud() + "%");
+        tvDewPoint.setText(weatherResponse.getNow().getDew() + "°C");
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // 设置窗口背景透明
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    }
+
+    private void setWeatherIcon(ImageView imageView, String weatherText) {
+        int resId = R.drawable.ic_sunny; // 默认图标
+        if (weatherText.contains("晴")) {
+            resId = R.drawable.ic_sunny;
+        } else if (weatherText.contains("云")) {
+            resId = R.drawable.ic_cloudy;
+        } else if (weatherText.contains("雨")) {
+            resId = R.drawable.ic_rain;
+        }
+        imageView.setImageResource(resId);
     }
 }
