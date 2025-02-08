@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.example.xiaoshoufuzhu.R;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -119,6 +116,7 @@ public class ProductCheckFragment extends Fragment {
                 for (PendingInventory inventory : inventoriesToRemove) {
                     adapter.removePendingInventory(inventory);
                 }
+                new FetchPendingInventoryTask().execute();  // 刷新待盘点列表
             } else {
                 Toast.makeText(getContext(), "入库操作失败", Toast.LENGTH_SHORT).show();
             }

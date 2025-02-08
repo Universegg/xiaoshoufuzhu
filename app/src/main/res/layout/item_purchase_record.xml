@@ -130,6 +130,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:paddingEnd="4dp"
+            android:textColor="#4CAF50"
             android:gravity="center_vertical"/>
 
         <TextView

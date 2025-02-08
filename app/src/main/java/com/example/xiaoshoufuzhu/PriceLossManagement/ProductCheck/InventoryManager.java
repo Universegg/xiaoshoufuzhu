@@ -1,9 +1,7 @@
 package com.example.xiaoshoufuzhu.PriceLossManagement.ProductCheck;
 
 import android.util.Log;
-
 import com.example.xiaoshoufuzhu.DatabaseHelper;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -109,31 +107,35 @@ public class InventoryManager {
         return pendingInventoryList;
     }
 
-
     // 将待盘点记录入库
     public static boolean stockInProduct(int productId, String name, String batchNumber, double quantity, double price) {
         Connection connection = DatabaseHelper.getConnection();
         if (connection != null) {
+            PreparedStatement selectStatement = null;
+            PreparedStatement updateStatement = null;
+            PreparedStatement insertStatement = null;
+            PreparedStatement updatePendingStatement = null;
+            ResultSet resultSet = null;
             try {
                 connection.setAutoCommit(false);  // 开启事务
 
                 // 查找是否存在相同批号的产品
                 String selectQuery = "SELECT * FROM products WHERE num = ?";
-                PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+                selectStatement = connection.prepareStatement(selectQuery);
                 selectStatement.setString(1, batchNumber);
-                ResultSet resultSet = selectStatement.executeQuery();
+                resultSet = selectStatement.executeQuery();
 
                 if (resultSet.next()) {
                     // 更新库存数量
                     String updateQuery = "UPDATE products SET stock = stock + ? WHERE num = ?";
-                    PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+                    updateStatement = connection.prepareStatement(updateQuery);
                     updateStatement.setDouble(1, quantity);
                     updateStatement.setString(2, batchNumber);
                     updateStatement.executeUpdate();
                 } else {
                     // 插入新产品
                     String insertQuery = "INSERT INTO products (name, num, price, stock) VALUES (?, ?, ?, ?)";
-                    PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+                    insertStatement = connection.prepareStatement(insertQuery);
                     insertStatement.setString(1, name);
                     insertStatement.setString(2, batchNumber);
                     insertStatement.setDouble(3, price);
@@ -143,7 +145,7 @@ public class InventoryManager {
 
                 // 更新待入库表的 state 为 '入库'
                 String updatePendingQuery = "UPDATE stockpending SET state = '入库' WHERE num = ?";
-                PreparedStatement updatePendingStatement = connection.prepareStatement(updatePendingQuery);
+                updatePendingStatement = connection.prepareStatement(updatePendingQuery);
                 updatePendingStatement.setString(1, batchNumber);
                 updatePendingStatement.executeUpdate();
 
@@ -157,7 +159,10 @@ public class InventoryManager {
                     rollbackEx.printStackTrace();
                 }
             } finally {
-                DatabaseHelper.close(connection, null, null);
+                DatabaseHelper.close(connection, selectStatement, resultSet);
+                DatabaseHelper.close(null, updateStatement, null);
+                DatabaseHelper.close(null, insertStatement, null);
+                DatabaseHelper.close(null, updatePendingStatement, null);
             }
         }
         return false;
