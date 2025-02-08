@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_background">
 
-    <!-- 横向三等分背景颜色 -->
+    <!-- 横向三等分背景颜色（优化透明度） -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:alpha="0.2">
 
-        <!-- 第一部分背景 -->
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#919f7d" />
 
-        <!-- 第二部分背景 -->
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#e5d8c8" />
 
-        <!-- 第三部分背景 -->
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -32,270 +32,345 @@
     </LinearLayout>
 
     <!-- 内容布局 -->
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <RelativeLayout
-            android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/yu">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="首页"
-                android:textColor="@color/white"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/imageWeahther"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/relativeLayout2"
-            android:background="@drawable/radius_border"
-            android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/backgroundImage"
-                android:layout_width="wrap_content"
-                android:layout_height="160dp"
-                android:src="@drawable/weather"
-                android:scaleType="fitXY"
-                android:layout_marginTop="0dp"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/relativeLayout2"
-            android:layout_marginTop="0dp"
-            android:padding="16dp">
-
-            <LinearLayout
-                android:id="@+id/linearCity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/radius_border"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/city"
-                    android:layout_marginStart="8dp" />
+            <!-- 标题栏 -->
+            <RelativeLayout
+                android:id="@+id/relativeLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/primary_green"
+                android:elevation="8dp">
 
                 <TextView
-                    android:id="@+id/tvCitySearchResults"
+                    android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="城市"
+                    android:layout_centerInParent="true"
+                    android:text="首页"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
-                    android:padding="10dp"/>
-            </LinearLayout>
+                    android:textStyle="bold"/>
+            </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/linearCity"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:background="@drawable/radius_border"
-                android:gravity="center">
+            <!-- 天气背景图 -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageWeahther"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_below="@id/relativeLayout2"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
+                <!-- 背景图片 -->
                 <ImageView
-                    android:id="@+id/ivWeatherIcon"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:src="@drawable/cloud"
-                    android:layout_marginStart="8dp" />
+                    android:id="@+id/backgroundImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/weather"/>
 
-                <TextView
-                    android:id="@+id/tvWeather"
-                    android:layout_width="wrap_content"
+                <!-- 叠加天气信息 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="查看天气"
-                    android:textSize="20sp"
-                    android:padding="10dp"/>
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@drawable/weather_overlay_gradient">
+
+                    <!-- 城市信息 -->
+                    <LinearLayout
+                        android:id="@+id/linearCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/radius_border_accent"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/city" />
+
+                        <TextView
+                            android:id="@+id/tvCitySearchResults"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="城市"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <!-- 天气状态 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/radius_border_accent"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/ivWeatherIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/cloud" />
+
+                        <TextView
+                            android:id="@+id/tvWeather"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="温度"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <!-- 天气预警 -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/weatherWarningCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:cardBackgroundColor="#80FFFFFF"
+                        app:cardCornerRadius="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:padding="12dp">
+
+                            <ImageView
+                                android:id="@+id/ivAlarm"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/alarm" />
+
+                            <TextView
+                                android:id="@+id/tvWarning"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="预警"
+                                android:textColor="@color/warning_text"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 功能按钮容器 -->
+            <LinearLayout
+                android:id="@+id/buttonContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageWeahther"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/radius_border1">
+
+                <!-- 第一行按钮 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- 价格与损耗管理 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_price_loss"
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="12dp"
+                        app:strokeColor="@color/card_stroke"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:src="@drawable/btn1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="价格与损耗"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- 销售管理 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_sales"
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="12dp"
+                        app:strokeColor="@color/card_stroke"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:src="@drawable/btn2" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="销售管理"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- 第二行按钮 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
+
+                    <!-- 进货管理 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_purchase"
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="12dp"
+                        app:strokeColor="@color/card_stroke"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:src="@drawable/btn3" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="进货管理"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- 报表查看 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_report"
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="12dp"
+                        app:strokeColor="@color/card_stroke"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:src="@drawable/btn4" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="报表查看"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- 第三行按钮 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!-- 动态分析 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_analysis"
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="12dp"
+                        app:strokeColor="@color/card_stroke"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:src="@drawable/btn5" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="动态分析"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/weatherWarningLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/imageWeahther"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            android:background="@drawable/radius_border"
-            android:padding="6dp">
-
-            <ImageView
-                android:id="@+id/ivAlarm"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/alarm"
-                android:layout_marginStart="0dp" />
-
-            <TextView
-                android:id="@+id/tvWarning"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:padding="10dp"
-                android:text="天气灾害预警"
-                android:textSize="10sp" />
-
-        </LinearLayout>
-
-        <!-- 使用LinearLayout将框架控件分为两行 -->
-        <LinearLayout
-            android:id="@+id/buttonContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/weatherWarningLayout"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:background="@drawable/radius_border"
-            android:padding="16dp">
-
-            <!-- 第一行按钮 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginBottom="20dp">
-
-                <!-- 价格与损耗管理框架 -->
-                <FrameLayout
-                    android:id="@+id/framePriceLossManagement"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp">
-
-                    <ImageView
-                        android:id="@+id/btnPriceLossManagement"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/btn1" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:text="价格与损耗"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-                </FrameLayout>
-
-                <!-- 销售管理框架 -->
-                <FrameLayout
-                    android:id="@+id/frameSalesManagement"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp">
-
-                    <ImageView
-                        android:id="@+id/btnSalesManagement"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/btn2" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:text="销售管理"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-                </FrameLayout>
-
-                <!-- 进货管理框架 -->
-                <FrameLayout
-                    android:id="@+id/framePurchaseManagement"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/btnPurchaseManagement"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/btn3" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:text="进货管理"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-                </FrameLayout>
-            </LinearLayout>
-
-            <!-- 第二行按钮 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <!-- 报表查看框架 -->
-                <FrameLayout
-                    android:id="@+id/frameReportView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp">
-
-                    <ImageView
-                        android:id="@+id/btnReportView"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/btn4" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:text="报表查看"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-                </FrameLayout>
-
-                <!-- 销量与价格动态分析框架 -->
-                <FrameLayout
-                    android:id="@+id/frameSalesPriceAnalysis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/btnSalesPriceAnalysis"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/btn5" />
-
-                    <TextView
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:text="动态分析"
-                        android:textStyle="bold"
-                        android:gravity="center" />
-                </FrameLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
