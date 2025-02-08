@@ -31,6 +31,28 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="运费："
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvFreight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="运费"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingEnd="4dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="（元）"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <!-- 第二行：采购数量和单价 -->
@@ -83,7 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="（元/件）"
+            android:text="（元）"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -118,12 +140,13 @@
 
     </LinearLayout>
 
+    <!-- 第四行：采购日期 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-
         android:paddingBottom="4dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,5 +162,16 @@
             android:textStyle="bold"
             android:paddingEnd="4dp"
             android:gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <!-- 第五行：运费 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
+
+
     </LinearLayout>
 </LinearLayout>

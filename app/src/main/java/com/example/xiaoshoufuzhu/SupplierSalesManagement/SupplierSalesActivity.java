@@ -160,7 +160,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
             Connection connection = DatabaseHelper.getConnection();
             if (connection != null) {
                 try {
-                    String query = "SELECT id, name, num, quantity, price, purchase_date, total_price " +
+                    String query = "SELECT id, name, num, quantity, price, purchase_date, total_price, freight " +
                             "FROM records_suppliers " +
                             "WHERE sid = ?";
                     PreparedStatement statement = connection.prepareStatement(query);
@@ -176,7 +176,8 @@ public class SupplierSalesActivity extends AppCompatActivity {
                                 resultSet.getInt("quantity"),
                                 resultSet.getDouble("price"),
                                 resultSet.getString("purchase_date"),
-                                resultSet.getDouble("total_price")
+                                resultSet.getDouble("total_price"),
+                                resultSet.getDouble("freight")
                         ));
                     }
 
@@ -235,7 +236,6 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }).start();
     }
 
-
     private void showUpdateSupplierDialog() {
         int position = spnSuppliers.getSelectedItemPosition();
         if (position == Spinner.INVALID_POSITION) {
@@ -292,7 +292,6 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }).start();
     }
 
-
     private void showAddPurchaseRecordDialog() {
         // 检查是否已选择供应商
         int position = spnSuppliers.getSelectedItemPosition();
@@ -311,6 +310,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
         EditText edtUnitPrice = dialogView.findViewById(R.id.edtUnitPrice); // 单价输入框
         TextView tvReceivablePrice = dialogView.findViewById(R.id.tvReceivablePrice); // 应收金额显示
         EditText edtActualAmount = dialogView.findViewById(R.id.edtActualAmount); // 实收金额输入框
+        EditText edtFreight = dialogView.findViewById(R.id.edtFreight); // 运费输入框
 
         // 显示当前选中的供应商
         tvSelectedSupplier.setText(selectedSupplier.getName());
@@ -322,7 +322,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateReceivablePrice(edtQuantity, edtUnitPrice, tvReceivablePrice);
+                calculateReceivablePrice(edtQuantity, edtUnitPrice, edtFreight, tvReceivablePrice);
             }
 
             @Override
@@ -336,7 +336,21 @@ public class SupplierSalesActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateReceivablePrice(edtQuantity, edtUnitPrice, tvReceivablePrice);
+                calculateReceivablePrice(edtQuantity, edtUnitPrice, edtFreight, tvReceivablePrice);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // 运费输入监听
+        edtFreight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                calculateReceivablePrice(edtQuantity, edtUnitPrice, edtFreight, tvReceivablePrice);
             }
 
             @Override
@@ -353,6 +367,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
                         int quantity = Integer.parseInt(edtQuantity.getText().toString());
                         double unitPrice = Double.parseDouble(edtUnitPrice.getText().toString());
                         double actualAmount = Double.parseDouble(edtActualAmount.getText().toString());
+                        double freight = Double.parseDouble(edtFreight.getText().toString());
 
                         // 检查产品名称和批次号是否为空
                         if (productName.isEmpty() || batchNo.isEmpty()) {
@@ -366,7 +381,8 @@ public class SupplierSalesActivity extends AppCompatActivity {
                                 batchNo,
                                 quantity,
                                 unitPrice,
-                                actualAmount
+                                actualAmount,
+                                freight
                         );
                     } catch (NumberFormatException e) {
                         Toast.makeText(this, "请输入有效的数值", Toast.LENGTH_SHORT).show();
@@ -376,11 +392,12 @@ public class SupplierSalesActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void calculateReceivablePrice(EditText edtQuantity, EditText edtUnitPrice, TextView tvReceivablePrice) {
+    private void calculateReceivablePrice(EditText edtQuantity, EditText edtUnitPrice, EditText edtFreight, TextView tvReceivablePrice) {
         try {
             int quantity = Integer.parseInt(edtQuantity.getText().toString());
             double unitPrice = Double.parseDouble(edtUnitPrice.getText().toString());
-            double receivable = quantity * unitPrice;
+            double freight = Double.parseDouble(edtFreight.getText().toString());
+            double receivable = quantity * unitPrice + freight;
             tvReceivablePrice.setText(String.format("¥%.2f", receivable));
         } catch (NumberFormatException e) {
             tvReceivablePrice.setText("¥0.00");
@@ -389,7 +406,8 @@ public class SupplierSalesActivity extends AppCompatActivity {
 
     private void addPurchaseRecordToDatabase(Supplier supplier, String productName,
                                              String batchNo, int quantity,
-                                             double unitPrice, double actualAmount) {
+                                             double unitPrice, double actualAmount,
+                                             double freight) {
         new Thread(() -> {
             Connection connection = DatabaseHelper.getConnection();
             if (connection != null) {
@@ -398,8 +416,8 @@ public class SupplierSalesActivity extends AppCompatActivity {
 
                     // 插入采购记录
                     String insertQuery = "INSERT INTO records_suppliers " +
-                            "(sid, name, num, quantity, price, total_price, purchase_date, state) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+                            "(sid, name, num, quantity, price, total_price, purchase_date, state, freight) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
 
                     PreparedStatement pstmt = connection.prepareStatement(insertQuery);
                     pstmt.setInt(1, supplier.getId());
@@ -407,8 +425,9 @@ public class SupplierSalesActivity extends AppCompatActivity {
                     pstmt.setString(3, batchNo);     // 使用输入的批次号
                     pstmt.setInt(4, quantity);
                     pstmt.setDouble(5, unitPrice);
-                    pstmt.setDouble(6, actualAmount);
-                    pstmt.setString(7, actualAmount < (quantity * unitPrice) ? "0" : "1"); // 状态判断
+                    pstmt.setDouble(6, actualAmount < (quantity * unitPrice + freight) ? actualAmount : (quantity * unitPrice + freight)); // 修改 total_price 计算
+                    pstmt.setString(7, actualAmount < (quantity * unitPrice + freight) ? "0" : "1"); // 状态判断
+                    pstmt.setDouble(8, freight); // 添加运费字段
                     pstmt.executeUpdate();
 
                     connection.commit();

@@ -32,6 +32,7 @@ public class PurchaseRecordAdapter extends ArrayAdapter<PurchaseRecord> {
         TextView tvUnitPrice = convertView.findViewById(R.id.tvUnitPrice);
         TextView tvPurchaseDate = convertView.findViewById(R.id.tvPurchaseDate);
         TextView tvTotalPrice = convertView.findViewById(R.id.tvTotalPrice);
+        TextView tvFreight = convertView.findViewById(R.id.tvFreight); // 新增运费显示
 
         tvProductName.setText(purchaseRecord.getProductName());
         tvBatchNo.setText(purchaseRecord.getBatchNo());
@@ -39,6 +40,7 @@ public class PurchaseRecordAdapter extends ArrayAdapter<PurchaseRecord> {
         tvUnitPrice.setText(String.valueOf(purchaseRecord.getPrice()));
         tvPurchaseDate.setText(purchaseRecord.getPurchaseDate());
         tvTotalPrice.setText(String.valueOf(purchaseRecord.getTotalPrice()));
+        tvFreight.setText(String.valueOf(purchaseRecord.getFreight())); // 显示运费
 
         return convertView;
     }

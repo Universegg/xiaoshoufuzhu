@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="产品盘点" />
+            android:text="手动拉取" />
 
         <Button
             android:id="@+id/btn_one_key_stock"

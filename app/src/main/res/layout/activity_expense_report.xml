@@ -3,23 +3,63 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <!-- 时间段选择器 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#B28C6F"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="支出报表"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:background="#B28C6F"
+        android:gravity="center">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="类别："
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <!-- 时间段选择器 -->
         <Spinner
             android:id="@+id/spinner_time_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/time_period_array" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="日期："
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
     </LinearLayout>
+
 
     <!-- 日期选择器 -->
     <DatePicker

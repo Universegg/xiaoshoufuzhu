@@ -8,10 +8,11 @@ public class PurchaseRecord {
     private double price;
     private String purchaseDate;
     private double totalPrice;
+    private double freight; // 新增运费字段
 
     public PurchaseRecord(int id, String productName, String batchNo,
                           int quantity, double price, String purchaseDate,
-                          double totalPrice) {
+                          double totalPrice, double freight) { // 修改构造方法
         this.id = id;
         this.productName = productName;
         this.batchNo = batchNo;
@@ -19,13 +20,13 @@ public class PurchaseRecord {
         this.price = price;
         this.purchaseDate = purchaseDate;
         this.totalPrice = totalPrice;
+        this.freight = freight; // 初始化运费字段
     }
 
     // Getter and Setter methods
     public int getId() {
         return id;
     }
-
 
     public String getProductName() {
         return productName;
@@ -49,5 +50,9 @@ public class PurchaseRecord {
 
     public double getTotalPrice() {
         return totalPrice;
+    }
+
+    public double getFreight() { // 新增运费字段的getter方法
+        return freight;
     }
 }
