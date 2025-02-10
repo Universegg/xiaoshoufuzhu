@@ -1,6 +1,5 @@
-package com.example.xiaoshoufuzhu.Reports;
+package com.example.xiaoshoufuzhu.ProductDetail;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;

@@ -1,26 +1,16 @@
-package com.example.xiaoshoufuzhu.Reports;
+package com.example.xiaoshoufuzhu.ProductDetail;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ProductDetailActivity extends AppCompatActivity {
 

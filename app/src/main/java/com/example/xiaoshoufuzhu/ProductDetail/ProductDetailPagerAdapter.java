@@ -1,4 +1,4 @@
-package com.example.xiaoshoufuzhu.Reports;
+package com.example.xiaoshoufuzhu.ProductDetail;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

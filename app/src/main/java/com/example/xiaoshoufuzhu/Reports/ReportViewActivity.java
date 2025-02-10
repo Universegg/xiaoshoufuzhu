@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.xiaoshoufuzhu.R;
+import com.example.xiaoshoufuzhu.Reports.ProductLoss.ProductLossReportActivity;
 import com.example.xiaoshoufuzhu.Reports.expense.ExpenseReportActivity;
 import com.example.xiaoshoufuzhu.Reports.financial.FinancialReportActivity;
 import com.example.xiaoshoufuzhu.Reports.income.IncomeReportActivity;

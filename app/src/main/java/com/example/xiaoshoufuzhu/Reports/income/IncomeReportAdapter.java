@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xiaoshoufuzhu.R;
-import com.example.xiaoshoufuzhu.Reports.ProductDetailActivity;
+import com.example.xiaoshoufuzhu.ProductDetail.ProductDetailActivity;
 
 import java.util.List;
 
