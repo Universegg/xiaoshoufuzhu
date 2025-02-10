@@ -89,51 +89,61 @@
         android:background="#e0e0e0"
         android:padding="8dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="产品名称"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="产品名称"
+                android:textStyle="bold"
+                android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="批号"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginEnd="16dp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="批号"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="损耗数量"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_weight="2">
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="损耗数量"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="损耗金额"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginEnd="16dp"/>
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="损耗金额"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="详细"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="详细"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- 用于显示报表数据的 ListView -->
     <ListView
         android:id="@+id/lvLossReport"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
 </LinearLayout>

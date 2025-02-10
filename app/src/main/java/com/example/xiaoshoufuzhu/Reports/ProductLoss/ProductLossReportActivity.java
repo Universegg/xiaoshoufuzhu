@@ -38,8 +38,8 @@ public class ProductLossReportActivity extends AppCompatActivity {
     private Spinner spinnerTimePeriod;
     private ProductLossReportAdapter adapter;
     private List<ProductLossRecord> ProductlossRecords;
-    private String selectedTimePeriod;
-    private Calendar selectedDate;
+    String selectedTimePeriod;
+    Calendar selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
