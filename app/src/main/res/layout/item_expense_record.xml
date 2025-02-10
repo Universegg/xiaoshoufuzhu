@@ -1,55 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
-    <!-- 原有内容 -->
+
     <LinearLayout
-        android:id="@+id/content_layout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/ivInfo"
-        android:orientation="horizontal">
+        android:layout_weight="1">
+            <TextView
+                android:id="@+id/tvProductName"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/tvProductName"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tvProductNum"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tvTotalExpense"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tvFreight"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tvProductNum"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:textSize="16sp"/>
     </LinearLayout>
 
-    <!-- 新增信息图标 -->
-    <ImageView
-        android:id="@+id/ivInfo"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:src="@drawable/information"
-        android:background="?attr/selectableItemBackgroundBorderless"/>
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tvTotalExpense"
+                android:layout_width="44dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvFreight"
+                android:layout_width="44dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"/>
+
+            <RelativeLayout
+                android:layout_width="38dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp">
+                <ImageView
+                    android:id="@+id/ivInfo"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/information"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+</LinearLayout>

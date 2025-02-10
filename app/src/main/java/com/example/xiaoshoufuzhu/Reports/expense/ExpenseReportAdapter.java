@@ -51,8 +51,8 @@ public class ExpenseReportAdapter extends ArrayAdapter<ExpenseRecord> {
         if (record != null) {
             holder.tvProductName.setText(record.getProductName());
             holder.tvBatchNumber.setText(record.getBatchNumber());
-            holder.tvTotalExpense.setText(String.format("¥%.2f", record.getTotalExpense()));
-            holder.tvFreight.setText(String.format("¥%.2f", record.getFreight()));
+            holder.tvTotalExpense.setText(String.format("%.1f", record.getTotalExpense()));
+            holder.tvFreight.setText(String.format("%.1f", record.getFreight()));
 
             // 设置点击事件
             holder.ivInfo.setOnClickListener(v -> {
