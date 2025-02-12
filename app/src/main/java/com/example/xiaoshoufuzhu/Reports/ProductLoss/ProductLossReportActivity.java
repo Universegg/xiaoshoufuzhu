@@ -137,6 +137,9 @@ public class ProductLossReportActivity extends AppCompatActivity {
     }
 
     private String getDateCondition() {
+        if (selectedTimePeriod == null) {
+            selectedTimePeriod = "按日";
+        }
         switch (selectedTimePeriod) {
             case "按年":
                 return "YEAR(l.loss_date) = ?";

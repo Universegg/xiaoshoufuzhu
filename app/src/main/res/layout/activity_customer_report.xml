@@ -1,72 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#f5f5f5">
 
-    <!-- 时间段选择器 -->
+    <!-- 标题栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#919f7d"
+        android:orientation="vertical"
+        android:paddingVertical="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="采购商报表"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- 时间筛选栏 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:background="#919f7d"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="类别："
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
 
         <Spinner
             android:id="@+id/spinner_time_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/time_period_array" />
+            android:entries="@array/time_period_array"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="日期："
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="32dp"
+            android:layout_height="32dp">
+            <ImageView
+                android:id="@+id/ivDatePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/date"
+                android:contentDescription="选择日期" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- 日期选择器 -->
-
-    <!-- 采购商选择器 -->
-    <DatePicker
-        android:id="@+id/datePicker"
+    <!-- 筛选条件卡片 -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner" />
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="8dp">
 
-    <Spinner
-        android:id="@+id/spinner_customer"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="选择采购商："
+                android:textColor="#212121"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="选择采购商">
+
+                <Spinner
+                    android:id="@+id/spinner_customer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 统计信息卡片 -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="8dp">
 
-    <!-- 显示采购商信息的 TextView -->
-    <TextView
-        android:id="@+id/tvCustomerInfo"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 客户信息 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="客户信息："
+                    android:textColor="#212121"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tvCustomerInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- 统计金额 -->
+            <TextView
+                android:id="@+id/tvTotalAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/green1"
+                android:gravity="center"
+                android:text="总销售金额：0.00元"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 表格标题 -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="采购商信息: " />
+        android:layout_height="48dp"
+        android:background="#e0e0e0"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:weightSum="14">
 
-    <!-- 显示总销售金额的 TextView -->
-    <TextView
-        android:id="@+id/tvTotalAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="总销售金额: " />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="产品名称"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
 
-    <!-- 用于显示报表数据的 ListView -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="批号"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="单价"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="数量"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="总价"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="日期"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="状态"
+            android:textStyle="bold"
+            android:textColor="#616161"
+            android:textSize="10sp"/>
+    </LinearLayout>
+
+    <!-- 数据列表 -->
     <ListView
         android:id="@+id/lvCustomerReport"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:layout_height="match_parent"
+        android:divider="#dddddd"
+        android:dividerHeight="1dp"
+        android:scrollbars="vertical"
+        android:fastScrollEnabled="true"/>
+
 </LinearLayout>
