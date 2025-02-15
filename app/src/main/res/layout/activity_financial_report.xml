@@ -1,79 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/gray">
 
-    <!-- 时间段选择器 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_green"
+        android:gravity="center">
 
-        <Spinner
-            android:id="@+id/spinner_time_period"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/time_period_array" />
+            android:text="财务报表"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- 日期选择器 -->
-    <DatePicker
-        android:id="@+id/datePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner" />
-
-    <!-- 显示总收入的 TextView -->
-    <TextView
-        android:id="@+id/tvTotalIncome"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="总收入: " />
+        android:background="@color/primary_green"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/white"
+        app:tabIndicatorColor="@color/white"/>
 
-    <!-- 显示总支出的 TextView -->
-    <TextView
-        android:id="@+id/tvTotalExpense"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="总支出: " />
-
-    <!-- 显示总损耗金额的 TextView -->
-    <TextView
-        android:id="@+id/tvTotalLoss"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="总损耗金额: " />
-
-    <!-- 显示总盈亏的 TextView -->
-    <TextView
-        android:id="@+id/tvTotalProfitLoss"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="总盈亏: " />
+        android:layout_height="match_parent"/>
 </LinearLayout>
