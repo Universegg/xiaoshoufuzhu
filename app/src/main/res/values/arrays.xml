@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="time_range_array">
+        <item>最近7天</item>
+        <item>最近30天</item>
+        <item>最近3个月</item>
+        <item>全部</item>
+    </string-array>
+</resources>
