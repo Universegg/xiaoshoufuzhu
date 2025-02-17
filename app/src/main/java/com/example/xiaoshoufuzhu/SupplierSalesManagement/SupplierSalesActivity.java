@@ -125,36 +125,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }).start();
     }
 
-    // 加载库存商品数据
-    private void loadInventoryItems() {
-        new Thread(() -> {
-            Connection connection = DatabaseHelper.getConnection();
-            if (connection != null) {
-                try {
-                    String query = "SELECT id, name, num, stock, price FROM products";
-                    PreparedStatement statement = connection.prepareStatement(query);
-                    ResultSet resultSet = statement.executeQuery();
-
-                    inventoryList.clear();
-                    while (resultSet.next()) {
-                        inventoryList.add(new InventoryItem(
-                                resultSet.getInt("id"),
-                                resultSet.getString("name"),
-                                resultSet.getString("num"),
-                                resultSet.getInt("stock"),
-                                resultSet.getDouble("price")
-                        ));
-                    }
-
-                    runOnUiThread(() -> inventoryAdapter.notifyDataSetChanged());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    // 加载采购记录（修改后的方法）
+    // 加载采购记录
     private void loadPurchaseRecords(int supplierId) {
         new Thread(() -> {
             Connection connection = DatabaseHelper.getConnection();
@@ -191,7 +162,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }).start();
     }
 
-    // 添加供应商对话框（保持不变）
+    // 显示添加供应商对话框
     private void showAddSupplierDialog() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_suppliers, null);
         EditText edtSupplierName = dialogView.findViewById(R.id.edtSupplierName);
@@ -211,6 +182,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
                 .show();
     }
 
+    // 添加供应商到数据库
     private void addSupplierToDatabase(String name, String phone, String address) {
         new Thread(() -> {
             Connection connection = DatabaseHelper.getConnection();
@@ -236,6 +208,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }).start();
     }
 
+    // 显示更新供应商对话框
     private void showUpdateSupplierDialog() {
         int position = spnSuppliers.getSelectedItemPosition();
         if (position == Spinner.INVALID_POSITION) {
@@ -266,6 +239,7 @@ public class SupplierSalesActivity extends AppCompatActivity {
                 .show();
     }
 
+    // 更新供应商信息
     private void updateSupplierInDatabase(Supplier supplier, String name, String phone, String address) {
         new Thread(() -> {
             Connection connection = DatabaseHelper.getConnection();
@@ -292,8 +266,8 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }).start();
     }
 
+    // 显示添加采购记录对话框
     private void showAddPurchaseRecordDialog() {
-        // 检查是否已选择供应商
         int position = spnSuppliers.getSelectedItemPosition();
         if (position == Spinner.INVALID_POSITION) {
             Toast.makeText(this, "请选择一个供应商", Toast.LENGTH_SHORT).show();
@@ -301,61 +275,61 @@ public class SupplierSalesActivity extends AppCompatActivity {
         }
         Supplier selectedSupplier = supplierList.get(position);
 
-        // 初始化对话框视图
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_purchase_records, null);
-        TextView tvSelectedSupplier = dialogView.findViewById(R.id.tvSelectedSupplier); // 当前供应商显示
-        EditText edtProductName = dialogView.findViewById(R.id.edtProductName); // 产品名称输入框
-        EditText edtBatchNo = dialogView.findViewById(R.id.edtBatchNo); // 批次号输入框
-        EditText edtQuantity = dialogView.findViewById(R.id.edtQuantity); // 数量输入框
-        EditText edtUnitPrice = dialogView.findViewById(R.id.edtUnitPrice); // 单价输入框
-        TextView tvReceivablePrice = dialogView.findViewById(R.id.tvReceivablePrice); // 应收金额显示
-        EditText edtActualAmount = dialogView.findViewById(R.id.edtActualAmount); // 实收金额输入框
-        EditText edtFreight = dialogView.findViewById(R.id.edtFreight); // 运费输入框
+        TextView tvSelectedSupplier = dialogView.findViewById(R.id.tvSelectedSupplier);
+        EditText edtProductName = dialogView.findViewById(R.id.edtProductName);
+        EditText edtBatchNo = dialogView.findViewById(R.id.edtBatchNo);
+        EditText edtQuantity = dialogView.findViewById(R.id.edtQuantity);
+        EditText edtUnitPrice = dialogView.findViewById(R.id.edtUnitPrice);
+        TextView tvReceivablePrice = dialogView.findViewById(R.id.tvReceivablePrice);
+        EditText edtActualAmount = dialogView.findViewById(R.id.edtActualAmount);
+        EditText edtFreight = dialogView.findViewById(R.id.edtFreight);
 
-        // 显示当前选中的供应商
+        // 初始化修改标志
+        boolean[] isAmountModified = {false};
+
         tvSelectedSupplier.setText(selectedSupplier.getName());
 
-        // 数量输入监听
-        edtQuantity.addTextChangedListener(new TextWatcher() {
+        // 金额计算监听器
+        TextWatcher calculatorWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateReceivablePrice(edtQuantity, edtUnitPrice, edtFreight, tvReceivablePrice);
+                calculatePrices(
+                        edtQuantity,
+                        edtUnitPrice,
+                        edtFreight,
+                        tvReceivablePrice,
+                        edtActualAmount,
+                        isAmountModified
+                );
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        // 监听实收金额的手动修改
+        edtActualAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0 || before > 0) {
+                    isAmountModified[0] = true;
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        // 单价输入监听
-        edtUnitPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateReceivablePrice(edtQuantity, edtUnitPrice, edtFreight, tvReceivablePrice);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        // 运费输入监听
-        edtFreight.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateReceivablePrice(edtQuantity, edtUnitPrice, edtFreight, tvReceivablePrice);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+        edtQuantity.addTextChangedListener(calculatorWatcher);
+        edtUnitPrice.addTextChangedListener(calculatorWatcher);
+        edtFreight.addTextChangedListener(calculatorWatcher);
 
         new AlertDialog.Builder(this)
                 .setTitle("添加采购记录")
@@ -366,10 +340,9 @@ public class SupplierSalesActivity extends AppCompatActivity {
                         String batchNo = edtBatchNo.getText().toString().trim();
                         int quantity = Integer.parseInt(edtQuantity.getText().toString());
                         double unitPrice = Double.parseDouble(edtUnitPrice.getText().toString());
-                        double actualAmount = Double.parseDouble(edtActualAmount.getText().toString());
                         double freight = Double.parseDouble(edtFreight.getText().toString());
+                        double actualAmount = Double.parseDouble(edtActualAmount.getText().toString());
 
-                        // 检查产品名称和批次号是否为空
                         if (productName.isEmpty() || batchNo.isEmpty()) {
                             Toast.makeText(this, "请输入产品名称和批次号", Toast.LENGTH_SHORT).show();
                             return;
@@ -392,21 +365,40 @@ public class SupplierSalesActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void calculateReceivablePrice(EditText edtQuantity, EditText edtUnitPrice, EditText edtFreight, TextView tvReceivablePrice) {
+    // 实时计算价格
+    private void calculatePrices(EditText edtQuantity,
+                                 EditText edtUnitPrice,
+                                 EditText edtFreight,
+                                 TextView tvReceivablePrice,
+                                 EditText edtActualAmount,
+                                 boolean[] isAmountModified) {
         try {
             int quantity = Integer.parseInt(edtQuantity.getText().toString());
             double unitPrice = Double.parseDouble(edtUnitPrice.getText().toString());
             double freight = Double.parseDouble(edtFreight.getText().toString());
             double receivable = quantity * unitPrice + freight;
-            tvReceivablePrice.setText(String.format("¥%.2f", receivable));
+
+            tvReceivablePrice.setText(String.format("应收金额：¥%.2f", receivable));
+
+            // 仅当用户未手动修改时自动更新
+            if (!isAmountModified[0]) {
+                edtActualAmount.setText(String.format("%.2f", receivable));
+            }
         } catch (NumberFormatException e) {
-            tvReceivablePrice.setText("¥0.00");
+            tvReceivablePrice.setText("应收金额：¥0.00");
+            if (!isAmountModified[0]) {
+                edtActualAmount.setText("0.00");
+            }
         }
     }
 
-    private void addPurchaseRecordToDatabase(Supplier supplier, String productName,
-                                             String batchNo, int quantity,
-                                             double unitPrice, double actualAmount,
+    // 添加采购记录到数据库
+    private void addPurchaseRecordToDatabase(Supplier supplier,
+                                             String productName,
+                                             String batchNo,
+                                             int quantity,
+                                             double unitPrice,
+                                             double actualAmount,
                                              double freight) {
         new Thread(() -> {
             Connection connection = DatabaseHelper.getConnection();
@@ -414,20 +406,19 @@ public class SupplierSalesActivity extends AppCompatActivity {
                 try {
                     connection.setAutoCommit(false);
 
-                    // 插入采购记录
                     String insertQuery = "INSERT INTO records_suppliers " +
                             "(sid, name, num, quantity, price, total_price, purchase_date, state, freight) " +
                             "VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
 
                     PreparedStatement pstmt = connection.prepareStatement(insertQuery);
                     pstmt.setInt(1, supplier.getId());
-                    pstmt.setString(2, productName); // 使用输入的产品名称
-                    pstmt.setString(3, batchNo);     // 使用输入的批次号
+                    pstmt.setString(2, productName);
+                    pstmt.setString(3, batchNo);
                     pstmt.setInt(4, quantity);
                     pstmt.setDouble(5, unitPrice);
-                    pstmt.setDouble(6, actualAmount < (quantity * unitPrice + freight) ? actualAmount : (quantity * unitPrice + freight)); // 修改 total_price 计算
-                    pstmt.setString(7, actualAmount < (quantity * unitPrice + freight) ? "0" : "1"); // 状态判断
-                    pstmt.setDouble(8, freight); // 添加运费字段
+                    pstmt.setDouble(6, actualAmount);
+                    pstmt.setString(7, "0"); // 固定状态为0
+                    pstmt.setDouble(8, freight);
                     pstmt.executeUpdate();
 
                     connection.commit();
@@ -451,6 +442,34 @@ public class SupplierSalesActivity extends AppCompatActivity {
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
+                }
+            }
+        }).start();
+    }
+
+    private void loadInventoryItems() {
+        new Thread(() -> {
+            Connection connection = DatabaseHelper.getConnection();
+            if (connection != null) {
+                try {
+                    String query = "SELECT id, name, num, stock, price FROM products";
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    ResultSet resultSet = statement.executeQuery();
+
+                    inventoryList.clear();
+                    while (resultSet.next()) {
+                        inventoryList.add(new InventoryItem(
+                                resultSet.getInt("id"),
+                                resultSet.getString("name"),
+                                resultSet.getString("num"),
+                                resultSet.getInt("stock"),
+                                resultSet.getDouble("price")
+                        ));
+                    }
+
+                    runOnUiThread(() -> inventoryAdapter.notifyDataSetChanged());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }).start();

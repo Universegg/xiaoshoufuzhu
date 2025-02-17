@@ -47,7 +47,7 @@ public class CustomerSalesFragment extends Fragment {
     private Spinner spnCustomers, spnFilter;
     private ListView lvCustomerSalesRecords;
     private TextView tvCustomerDetails;
-    private Button btnAddCustomer, btnUpdateCustomer, btnAddSalesRecord;
+    private Button btnAddCustomer, btnUpdateCustomer, btnAddSalesRecord,btnSettleAll;
     private ArrayList<Customer> customerList;
     private ArrayList<SalesRecord> salesRecordList;
     private ArrayList<InventoryItem> inventoryList;
@@ -69,6 +69,7 @@ public class CustomerSalesFragment extends Fragment {
         btnAddCustomer = view.findViewById(R.id.btnAddCustomer);
         btnUpdateCustomer = view.findViewById(R.id.btnUpdateCustomer);
         btnAddSalesRecord = view.findViewById(R.id.btnAddSalesRecord);
+        btnSettleAll = view.findViewById(R.id.btnSettleAll);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
         customerList = new ArrayList<>();
@@ -77,7 +78,7 @@ public class CustomerSalesFragment extends Fragment {
         customerAdapter = new CustomerAdapter(getContext(), R.layout.custom_spinner_item, customerList);
         salesRecordAdapter = new SalesRecordAdapter(getContext(), salesRecordList);
         inventoryAdapter = new InventoryAdapter(getContext(), inventoryList);
-
+        btnSettleAll.setOnClickListener(v -> settleAllCreditSales());
         spnCustomers.setAdapter(customerAdapter);
         lvCustomerSalesRecords.setAdapter(salesRecordAdapter);
 
@@ -250,10 +251,10 @@ public class CustomerSalesFragment extends Fragment {
 
     private void filterSalesRecords(String filterOption) {
         List<SalesRecord> filteredList = new ArrayList<>();
-        for (SalesRecord record : salesRecordList) {
+        for (SalesRecord record : salesRecordList) { // 使用完整的原始数据
             if (filterOption.equals("显示全部") ||
-                    (filterOption.equals("仅显示赊账") && record.getState().equals("赊账")) ||
-                    (filterOption.equals("仅显示结清") && record.getState().equals("结清"))) {
+                    (filterOption.equals("仅显示赊账") && "赊账".equals(record.getState())) ||
+                    (filterOption.equals("仅显示结清") && "结清".equals(record.getState()))) {
                 filteredList.add(record);
             }
         }
@@ -290,6 +291,86 @@ public class CustomerSalesFragment extends Fragment {
         }).start();
     }
 
+    private void settleAllCreditSales() {
+        int position = spnCustomers.getSelectedItemPosition();
+        if (position == Spinner.INVALID_POSITION) {
+            Toast.makeText(getContext(), "请先选择采购商", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Customer customer = customerList.get(position);
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("一键结算")
+                .setMessage("确定要结算所有赊账记录吗？")
+                .setPositiveButton("确定", (dialog, which) -> processSettlement(customer))
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void processSettlement(Customer customer) {
+        new Thread(() -> {
+            Connection connection = DatabaseHelper.getConnection();
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(false);
+
+                    // 计算总赊账金额
+                    String sumQuery = "SELECT SUM(total_price) AS total FROM records_customers WHERE cid=? AND state='赊账'";
+                    PreparedStatement sumStmt = connection.prepareStatement(sumQuery);
+                    sumStmt.setInt(1, customer.getId());
+                    ResultSet rs = sumStmt.executeQuery();
+                    double total = rs.next() ? rs.getDouble("total") : 0;
+
+                    if (total == 0) {
+                        getActivity().runOnUiThread(() ->
+                                Toast.makeText(getContext(), "没有赊账记录", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
+
+                    // 更新记录状态
+                    String updateQuery = "UPDATE records_customers SET state='结清' WHERE cid=? AND state='赊账'";
+                    PreparedStatement updateStmt = connection.prepareStatement(updateQuery);
+                    updateStmt.setInt(1, customer.getId());
+                    int updated = updateStmt.executeUpdate();
+
+                    // 更新客户金额
+                    String customerQuery = "UPDATE customers SET amount=amount-? WHERE id=?";
+                    PreparedStatement customerStmt = connection.prepareStatement(customerQuery);
+                    customerStmt.setDouble(1, total);
+                    customerStmt.setInt(2, customer.getId());
+                    customerStmt.executeUpdate();
+
+                    connection.commit();
+
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "已结算" + updated + "条记录", Toast.LENGTH_SHORT).show();
+                        loadCustomerSalesRecords(customer.getId());
+                        loadCustomers();
+                        // 更新客户详情显示
+                        getCustomerDetails(customer.getId(), details -> {
+                            Intent intent = new Intent("com.example.UPDATE_SALES_DATA");
+                            intent.putExtra("customer_details", details);
+                            getContext().sendBroadcast(intent);
+                        });
+                    });
+                } catch (SQLException e) {
+                    try {
+                        connection.rollback();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        connection.setAutoCommit(true);
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
     private void showAddCustomerDialog() {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_customer, null);
         EditText edtCustomerName = dialogView.findViewById(R.id.edtCustomerName);
