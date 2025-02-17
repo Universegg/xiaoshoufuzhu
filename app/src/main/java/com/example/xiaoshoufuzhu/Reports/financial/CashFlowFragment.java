@@ -38,7 +38,7 @@ public class CashFlowFragment extends BaseFinancialFragment {
             try (Connection conn = DatabaseHelper.getConnection();
                  Statement stmt = conn.createStatement()) {
 
-                // 现金流入 = 线下已结清订单 + 线上销售（假设线上即时支付）
+                // 现金流入 = 采购商已结清订单 + 散户销售
                 String cashInSql = "SELECT " +
                         "(SELECT COALESCE(SUM(rc.total_price),0) " +
                         "FROM records_customers rc " +
