@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private ProgressBar progressBar;
     private TextView tvForgotPassword, tvUserAgreement;
+    private CheckBox cbAgree;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +43,25 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         tvForgotPassword = findViewById(R.id.tv_forgot_password);
         tvUserAgreement = findViewById(R.id.tv_user_agreement);
+        cbAgree = findViewById(R.id.cb_agree);
     }
 
     private void setupLoginButton() {
-        btnLogin.setOnClickListener(v -> attemptLogin());
+        // 默认禁用登录按钮
+        btnLogin.setEnabled(false);
+
+        // 勾选框状态监听
+        cbAgree.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            btnLogin.setEnabled(isChecked);
+        });
+
+        btnLogin.setOnClickListener(v -> {
+            if (!cbAgree.isChecked()) {
+                showToast("请先同意用户协议");
+                return;
+            }
+            attemptLogin();
+        });
     }
 
     private void setupClickListeners() {
