@@ -1,13 +1,20 @@
 package com.example.xiaoshoufuzhu;
 
 import android.util.Log;
+
+import java.nio.charset.StandardCharsets;
+import java.security.spec.KeySpec;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public class DatabaseHelper {
 
@@ -68,6 +75,32 @@ public class DatabaseHelper {
             }
         } catch (SQLException e) {
             Log.e("Database", "Failed to close resources", e);
+        }
+    }
+
+
+    public static boolean validateUser(String username, String password) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getConnection();
+            String sql = "SELECT password FROM sales.sales_user WHERE username = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String storedHash = resultSet.getString("password");
+                return PasswordUtils.checkPassword(password, storedHash);
+            }
+            return false;
+        } catch (SQLException e) {
+            Log.e("DB", "验证错误: " + e.getErrorCode());
+            return false;
+        } finally {
+            close(connection, statement, resultSet);
         }
     }
 

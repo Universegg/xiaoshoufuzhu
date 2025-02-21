@@ -16,4 +16,15 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    // 在styles.xml中添加
+    <style name="AgreementDialog" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AgreementButton</item>
+    </style>
+
+    <style name="AgreementButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">#2E7D32</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>
