@@ -26,7 +26,7 @@
     <color name="primary_green">#919f7d</color>
     <color name="light_green">#E8F5E9</color>
 
-    <color name="light_background">#FAFAFA</color>
+    <color name="light_background">#F5F7F9</color>
     <color name="text_primary">#333333</color>
     <color name="card_background">#FFFFFF</color>
     <color name="card_stroke">#20000000</color>
@@ -34,4 +34,10 @@
     <color name="warning_text">#EF6C00</color>
     <color name="warning_icon">#F57C00</color>
 
+
+    <color name="primary_text">#263238</color>
+    <color name="secondary_text">#78909C</color>
+    <color name="icon_tint">#9E9E9E</color>
+    <color name="circle_background">#BDBDBD</color>
+    <color name="divider_color">#E0E0E0</color>
 </resources>

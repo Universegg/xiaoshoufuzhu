@@ -1,10 +1,12 @@
-package com.example.xiaoshoufuzhu;
+package com.example.xiaoshoufuzhu.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,7 +17,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ScrollView;
+
+import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.Home.MainActivity;
+import com.example.xiaoshoufuzhu.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -143,7 +148,15 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         private void handleLoginSuccess() {
-            showToast("\uD83C\uDF89 " + getString(R.string.login_success) + " \uD83C\uDF89");
+            String username = edtUsername.getText().toString();
+            String successMsg = getString(R.string.login_success, username);
+            showToast("\uD83C\uDF89 " + successMsg + " \uD83C\uDF89");
+
+            SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            String storedUser = prefs.getString("username", "未找到");
+            Log.d("Prefs", "存储的用户名: " + storedUser);
+
+            prefs.edit().putString("username", edtUsername.getText().toString()).apply();
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();

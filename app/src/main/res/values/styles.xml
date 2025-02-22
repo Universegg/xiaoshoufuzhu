@@ -12,6 +12,19 @@
         <item name="android:textColor">@color/white</item> <!-- 未选中选项卡的文本颜色 -->
     </style>
 
+    <style name="InfoItem.Title" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="InfoItem.Value" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:letterSpacing">0.03</item>
+    </style>
+
+
     <style name="ToolbarTitle" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>

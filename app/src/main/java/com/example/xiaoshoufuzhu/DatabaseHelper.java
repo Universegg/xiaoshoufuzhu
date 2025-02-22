@@ -2,19 +2,14 @@ package com.example.xiaoshoufuzhu;
 
 import android.util.Log;
 
-import java.nio.charset.StandardCharsets;
-import java.security.spec.KeySpec;
+import com.example.xiaoshoufuzhu.Login.PasswordUtils;
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 
 public class DatabaseHelper {
 
@@ -104,6 +99,41 @@ public class DatabaseHelper {
         }
     }
 
+    // DatabaseHelper.java 优化查询方法
+    public static User getUserByUsername(String username) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
 
+        try {
+            connection = getConnection();
+            String sql = "SELECT id, name, sex, age, email, mobile, user_type " +
+                    "FROM sales.sales_user WHERE username = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                User user = new User(
+                        resultSet.getInt("id"),
+                        username,
+                        resultSet.getString("name"),
+                        resultSet.getString("sex"),
+                        resultSet.getInt("age"),
+                        resultSet.getString("email"),
+                        resultSet.getString("mobile"),
+                        resultSet.getInt("user_type")
+                );
+                Log.d("DB", "用户数据解析成功: " + user.toString());
+                return user;
+            }
+        } catch (SQLException e) {
+            Log.e("DB", "查询错误: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            close(connection, statement, resultSet);
+        }
+        return null;
+    }
 
 }

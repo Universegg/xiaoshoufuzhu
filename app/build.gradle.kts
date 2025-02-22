@@ -46,4 +46,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.navigation:navigation-fragment:2.5.3")
 }

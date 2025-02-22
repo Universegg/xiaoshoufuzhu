@@ -5,162 +5,145 @@
     android:layout_height="match_parent"
     android:background="@color/light_background">
 
-    <!-- 横向三等分背景颜色（优化透明度） -->
-    <LinearLayout
+    <!-- 浅色渐变背景 -->
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:alpha="0.2">
+        android:background="@drawable/bg_gradient"
+        android:alpha="0.1"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#919f7d" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#e5d8c8" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#ffefd6" />
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <!-- 标题栏 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/primary_green"
-        android:elevation="8dp">
+        app:elevation="4dp">
 
         <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="个人中心"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:gravity="center"
+            android:layout_gravity="center"/>
 
-        <Button
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="14dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/sign_out" />
+    </com.google.android.material.appbar.MaterialToolbar>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout2"
+    <!-- 主体内容 -->
+    <ScrollView
+        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_below="@+id/relativeLayout"
-        android:background="@color/primary_green"
-        android:elevation="8dp">
-
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingVertical="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="14dp">
+            android:paddingHorizontal="16dp">
 
-            <LinearLayout
+            <!-- 用户信息卡片 -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/card_background">
 
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_gravity="center"
-                    android:background="@drawable/user"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:layout_gravity="center"
-                    android:text="用户名"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_gravity="center"
-                    android:text="角色"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    <!-- 基本信息区 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="16dp"
+                        android:padding="16dp"
+                        android:background="@drawable/bg_section_divider">
 
-                <Button
-                    android:id="@+id/btnSettings"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/setting" />
-            </LinearLayout>
+                        <TextView
+                            android:id="@+id/tv_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary_text"/>
+
+                        <TextView
+                            android:id="@+id/tv_role"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/secondary_text"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <!-- 详细信息列表 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="16dp">
+
+                        <com.example.xiaoshoufuzhu.InfoItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_username"
+                            app:icon="@drawable/ic_account"
+                            app:title="登录账号"
+                            app:showDivider="true"/>
+
+                        <com.example.xiaoshoufuzhu.InfoItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_sex"
+                            app:icon="@drawable/ic_gender"
+                            app:title="性别"
+                            app:showDivider="true"/>
+
+                        <com.example.xiaoshoufuzhu.InfoItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_age"
+                            app:icon="@drawable/ic_age"
+                            app:title="年龄"
+                            app:showDivider="true"/>
+
+                        <com.example.xiaoshoufuzhu.InfoItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_email"
+                            app:icon="@drawable/ic_email"
+                            app:title="电子邮箱"
+                            app:showDivider="true"/>
+
+                        <com.example.xiaoshoufuzhu.InfoItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_mobile"
+                            app:icon="@drawable/ic_phone"
+                            app:title="联系电话"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 统计信息卡片 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/card_background">
+
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/relativeLayout2"
-        android:background="@drawable/radius_border">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary_green"
-            android:padding="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="今日业绩"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="14dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="XXX" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="XXX" />
-
-            </LinearLayout>
-        </LinearLayout>
-
+    </ScrollView>
 </RelativeLayout>
