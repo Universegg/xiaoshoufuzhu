@@ -34,12 +34,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".Home.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+        </activity>
+
         <activity android:name=".PriceLossManagement.PriceLossManagementActivity" />
         <activity android:name=".SalesManagement.SalesManagementActivity" />
         <activity android:name=".SupplierSalesManagement.SupplierSalesActivity" />
         <activity android:name=".Reports.ReportViewActivity" />
         <activity android:name=".SalesPriceAnalysisActivity" />
-        <activity android:name=".SettingsActivity" />
         <activity android:name=".Reports.income.IncomeReportActivity" />
         <activity android:name=".Reports.expense.ExpenseReportActivity" />
         <activity android:name=".Reports.financial.FinancialReportActivity" />

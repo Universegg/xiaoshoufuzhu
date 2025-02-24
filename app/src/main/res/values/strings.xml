@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">xiaoshoufuzhu</string>
+    <string name="app_name">销售助手</string>
     <string name="prompt_select_purchaser">选择采购商</string>
     <string-array name="time_period_array">
         <item>按年</item>
@@ -14,6 +14,10 @@
         <item>仅显示结清</item>
     </string-array>
 
+    <string name="logout_title">确认退出</string>
+    <string name="logout_message">确定要退出当前账号吗？</string>
+    <string name="logout_confirm">退出</string>
+    <string name="cancel">取消</string>
 
 
     <string name="forgot_password_title">忘记密码</string>

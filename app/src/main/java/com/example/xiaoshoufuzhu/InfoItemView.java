@@ -2,22 +2,24 @@ package com.example.xiaoshoufuzhu;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 public class InfoItemView extends LinearLayout {
-
     private ImageView ivIcon;
     private TextView tvTitle;
     private TextView tvValue;
+    private EditText etValue;
     private View divider;
+    private boolean isEditable = false;
 
     public InfoItemView(Context context) {
         this(context, null);
@@ -34,113 +36,77 @@ public class InfoItemView extends LinearLayout {
 
     private void init(Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.view_info_item, this, true);
-        setupViews();
-        parseAttributes(context, attrs);
-    }
 
-    private void setupViews() {
         ivIcon = findViewById(R.id.iv_icon);
         tvTitle = findViewById(R.id.tv_title);
         tvValue = findViewById(R.id.tv_value);
         divider = findViewById(R.id.divider);
 
-        // 设置默认值防止显示空内容
-        tvValue.setText("未设置");
-    }
+        // 动态添加EditText
+        etValue = new EditText(context);
+        etValue.setLayoutParams(new LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT
+        ));
+        etValue.setTextSize(16);
+        etValue.setVisibility(GONE);
 
-    private void parseAttributes(Context context, AttributeSet attrs) {
+        // 添加到文本容器
+        LinearLayout textContainer = (LinearLayout) tvValue.getParent();
+        textContainer.addView(etValue, 1);
+
+        // 处理自定义属性
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.InfoItemView);
-
         try {
-            // 图标属性
+            // 图标
             if (a.hasValue(R.styleable.InfoItemView_icon)) {
-                Drawable icon = a.getDrawable(R.styleable.InfoItemView_icon);
-                ivIcon.setImageDrawable(icon);
-                ivIcon.setVisibility(VISIBLE);
+                ivIcon.setImageResource(a.getResourceId(R.styleable.InfoItemView_icon, 0));
             } else {
                 ivIcon.setVisibility(GONE);
             }
 
-            // 标题属性
-            if (a.hasValue(R.styleable.InfoItemView_title)) {
-                tvTitle.setText(a.getString(R.styleable.InfoItemView_title));
-            }
+            // 标题
+            tvTitle.setText(a.getString(R.styleable.InfoItemView_title));
 
-            // 分割线可见性
-            if (a.hasValue(R.styleable.InfoItemView_showDivider)) {
-                boolean showDivider = a.getBoolean(R.styleable.InfoItemView_showDivider, true);
-                divider.setVisibility(showDivider ? VISIBLE : GONE);
+            // 分割线
+            if (!a.getBoolean(R.styleable.InfoItemView_showDivider, true)) {
+                divider.setVisibility(GONE);
             }
         } finally {
             a.recycle();
         }
     }
 
-    // region 公开方法
-
-    /**
-     * 设置显示值（自动处理空值）
-     * @param text 要显示的文字内容
-     */
-    public void setInfoText(CharSequence text) {
-        tvValue.setText(!TextUtils.isEmpty(text) ? text : "未设置");
-    }
-
-    /**
-     * 设置图标资源
-     * @param resId 图标资源ID（传0时隐藏图标）
-     */
-    public void setIcon(int resId) {
-        if (resId != 0) {
-            ivIcon.setImageResource(resId);
-            ivIcon.setVisibility(VISIBLE);
+    // 设置可编辑模式
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+        tvValue.setVisibility(editable ? GONE : VISIBLE);
+        etValue.setVisibility(editable ? VISIBLE : GONE);
+        if (editable) {
+            etValue.setText(tvValue.getText());
         } else {
-            ivIcon.setVisibility(GONE);
+            tvValue.setText(etValue.getText());
         }
     }
 
-    /**
-     * 设置标题文字
-     * @param text 标题文字
-     */
-    public void setTitle(CharSequence text) {
-        tvTitle.setText(text);
+    // 设置显示值
+    public void setValue(String text) {
+        String displayText = !TextUtils.isEmpty(text) ? text : "未设置";
+        if (isEditable) {
+            etValue.setText(displayText);
+        } else {
+            tvValue.setText(displayText);
+        }
     }
 
-    /**
-     * 设置是否显示分割线
-     * @param visible 是否显示分割线
-     */
-    public void setDividerVisible(boolean visible) {
-        divider.setVisibility(visible ? VISIBLE : GONE);
-    }
-    // endregion
-
-    // region 样式控制方法
-
-    /**
-     * 设置值文字颜色
-     * @param color 颜色资源ID
-     */
-    public void setValueTextColor(int color) {
-        tvValue.setTextColor(getResources().getColor(color));
+    // 获取当前值
+    public String getValue() {
+        return isEditable ? etValue.getText().toString() : tvValue.getText().toString();
     }
 
-    /**
-     * 设置标题文字颜色
-     * @param color 颜色资源ID
-     */
-    public void setTitleTextColor(int color) {
-        tvTitle.setTextColor(getResources().getColor(color));
+    // 其他辅助方法...
+    public void setIcon(int resId) {
+        ivIcon.setImageResource(resId);
+        ivIcon.setVisibility(VISIBLE);
     }
-
-    /**
-     * 设置值文字大小
-     * @param unit 单位（TypedValue.COMPLEX_UNIT_*）
-     * @param size 文字大小
-     */
-    public void setValueTextSize(int unit, float size) {
-        tvValue.setTextSize(unit, size);
-    }
-    // endregion
 }

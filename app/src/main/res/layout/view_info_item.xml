@@ -5,43 +5,50 @@
     android:orientation="vertical"
     android:paddingVertical="12dp">
 
+    <!-- 主内容容器 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp">
 
+        <!-- 图标 -->
         <ImageView
             android:id="@+id/iv_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"/>
 
+        <!-- 信息容器（关键修改） -->
         <LinearLayout
+            android:id="@+id/info_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"/>
+        <!-- 标题 -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"/>
 
-            <TextView
-                android:id="@+id/tv_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"/>
-        </LinearLayout>
+        <!-- 值显示（可以是 TextView 或 EditText） -->
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="16sp"/>
     </LinearLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="12dp" />
 </LinearLayout>
+
+    <!-- 分割线 -->
+    <View
+    android:id="@+id/divider"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginStart="56dp"
+    android:layout_marginTop="12dp" />
+    </LinearLayout>

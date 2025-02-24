@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- 基本信息 -->
+
+        <com.example.xiaoshoufuzhu.InfoItemView
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_account"
+            app:showDivider="true"
+            app:title="姓名" />
+
+        <com.example.xiaoshoufuzhu.InfoItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_sex"
+            app:title="性别"
+            app:icon="@drawable/ic_gender"
+            app:showDivider="true"/>
+
+        <com.example.xiaoshoufuzhu.InfoItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_age"
+            app:title="年龄"
+            app:icon="@drawable/ic_age"
+            app:showDivider="true"/>
+
+        <com.example.xiaoshoufuzhu.InfoItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_email"
+            app:title="邮箱"
+            app:icon="@drawable/ic_email"
+            app:showDivider="true"/>
+
+        <com.example.xiaoshoufuzhu.InfoItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_mobile"
+            app:title="手机号"
+            app:icon="@drawable/ic_phone"/>
+
+        <!-- 保存按钮 -->
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="保存修改"
+            android:backgroundTint="@color/primary_green"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+</ScrollView>

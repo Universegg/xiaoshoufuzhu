@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- 通知设置 -->
+    <PreferenceCategory app:title="通知设置">
+        <SwitchPreferenceCompat
+            app:key="notifications_enabled"
+            app:title="接收通知"
+            app:summary="开启或关闭应用通知"
+            app:defaultValue="true"/>
+
+        <ListPreference
+            app:key="notification_sound"
+            app:title="通知提示音"
+            app:summary="选择通知提示音"
+            app:entries="@array/notification_sounds"
+            app:entryValues="@array/notification_sound_values"
+            app:defaultValue="default"/>
+    </PreferenceCategory>
+
+    <!-- 显示设置 -->
+    <PreferenceCategory app:title="显示设置">
+        <ListPreference
+            app:key="app_theme"
+            app:title="主题模式"
+            app:summary="选择应用主题"
+            app:entries="@array/themes"
+            app:entryValues="@array/theme_values"
+            app:defaultValue="system"/>
+    </PreferenceCategory>
+
+    <!-- 版本信息 -->
+    <Preference
+        app:key="version"
+        app:title="当前版本"
+        app:summary="1.0.0"
+        app:selectable="false"/>
+</PreferenceScreen>

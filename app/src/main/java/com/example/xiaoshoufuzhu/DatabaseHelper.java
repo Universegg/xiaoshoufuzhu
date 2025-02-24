@@ -136,4 +136,35 @@ public class DatabaseHelper {
         return null;
     }
 
+    public static boolean updateUser(User user) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnection();
+            String sql = "UPDATE sales.sales_user SET " +
+                    "name = ?, " +
+                    "sex = ?, " +
+                    "age = ?, " +
+                    "email = ?, " +
+                    "mobile = ? " +
+                    "WHERE id = ?";
+
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getSex());
+            statement.setInt(3, user.getAge());
+            statement.setString(4, user.getEmail());
+            statement.setString(5, user.getMobile());
+            statement.setInt(6, user.getId());
+
+            int rows = statement.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            Log.e("DB", "更新用户失败: " + e.getMessage());
+            return false;
+        } finally {
+            close(connection, statement, null);
+        }
+    }
 }

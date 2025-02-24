@@ -115,9 +115,8 @@ public class User {
         this.address = address;
     }
 
-    /**
-     * 获取角色名称（中文显示）
-     */
+
+
     public String getRoleName() {
         switch (userType) {
             case 0: return "系统管理员";
@@ -128,9 +127,6 @@ public class User {
         }
     }
 
-    /**
-     * 获取脱敏手机号（保护隐私）
-     */
     public String getSafeMobile() {
         if (mobile != null && mobile.length() == 11) {
             return mobile.substring(0, 3) + "****" + mobile.substring(7);

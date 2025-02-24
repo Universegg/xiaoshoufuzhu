@@ -6,4 +6,45 @@
         <item>最近3个月</item>
         <item>全部</item>
     </string-array>
+
+    <!-- 通知提示音选项 -->
+    <string-array name="notification_sounds">
+        <item>默认提示音</item>
+        <item>铃音1</item>
+        <item>铃音2</item>
+    </string-array>
+
+    <string-array name="notification_sound_values">
+        <item>default</item>
+        <item>ringtone1</item>
+        <item>ringtone2</item>
+    </string-array>
+
+
+    <!-- 主题选项 -->
+    <string-array name="themes">
+        <item>跟随系统</item>
+        <item>浅色模式</item>
+        <item>深色模式</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+
+        <string-array name="text_size_options">
+            <item>小号</item>
+            <item>中号</item>
+            <item>大号</item>
+        </string-array>
+
+        <string-array name="text_size_values">
+            <item>small</item>
+            <item>medium</item>
+            <item>large</item>
+        </string-array>
+
+
 </resources>
