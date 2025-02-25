@@ -3,6 +3,8 @@ package com.example.xiaoshoufuzhu;
 import android.util.Log;
 
 import com.example.xiaoshoufuzhu.Login.PasswordUtils;
+import com.example.xiaoshoufuzhu.SettingsAndUsers.Permission;
+import com.example.xiaoshoufuzhu.SettingsAndUsers.User;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -99,11 +101,12 @@ public class DatabaseHelper {
         }
     }
 
-    // DatabaseHelper.java 优化查询方法
     public static User getUserByUsername(String username) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+
+
 
         try {
             connection = getConnection();
@@ -124,6 +127,10 @@ public class DatabaseHelper {
                         resultSet.getString("mobile"),
                         resultSet.getInt("user_type")
                 );
+
+
+                Permission perm = getPermissionsByUserType(user.getUserType());
+                user.setPermission(perm);
                 Log.d("DB", "用户数据解析成功: " + user.toString());
                 return user;
             }
@@ -167,4 +174,41 @@ public class DatabaseHelper {
             close(connection, statement, null);
         }
     }
+    private static Permission getPermissionsByUserType(int userType) {
+        Log.d("DBDebug", "正在查询用户类型: " + userType + " 的权限");
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            // 确认表名和字段名正确
+            String sql = "SELECT p.* FROM sales.permissionmgr_usertypepermission utp "
+                    + "JOIN sales.permissionmgr_permission p ON utp.permission_id = p.id "
+                    + "WHERE utp.userType = ?";
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userType);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Log.d("DBDebug", "数据库返回的权限字段值: ");
+                Log.d("DBDebug", "priceMgr: " + rs.getBoolean("priceMgr"));
+                Log.d("DBDebug", "saleMgr: " + rs.getBoolean("saleMgr"));
+                Log.d("DBDebug", "purchaseMgr: " + rs.getBoolean("purchaseMgr"));
+                Log.d("DBDebug", "tableMgr: " + rs.getBoolean("tableMgr"));
+                Log.d("DBDebug", "anasys: " + rs.getBoolean("anasys"));
+                return Permission.fromResultSet(rs);
+            } else {
+                Log.d("DBDebug", "⚠️ 未找到权限记录");
+                return new Permission();
+            }
+        } catch (SQLException e) {
+            Log.e("DB", "权限查询失败", e);
+            return new Permission();
+        } finally {
+            close(conn, stmt, rs);
+        }
+    }
+
 }

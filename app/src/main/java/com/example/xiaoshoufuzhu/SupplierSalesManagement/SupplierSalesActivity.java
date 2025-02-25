@@ -18,8 +18,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.xiaoshoufuzhu.DatabaseHelper;
-import com.example.xiaoshoufuzhu.InventoryAdapter;
-import com.example.xiaoshoufuzhu.InventoryItem;
+import com.example.xiaoshoufuzhu.Inventory.InventoryAdapter;
+import com.example.xiaoshoufuzhu.Inventory.InventoryItem;
 import com.example.xiaoshoufuzhu.R;
 import com.example.xiaoshoufuzhu.SupplierSalesManagement.adapter.PurchaseRecordAdapter;
 import com.example.xiaoshoufuzhu.SupplierSalesManagement.adapter.SupplierAdapter;

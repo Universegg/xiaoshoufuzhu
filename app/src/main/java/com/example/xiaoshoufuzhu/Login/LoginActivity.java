@@ -2,6 +2,7 @@ package com.example.xiaoshoufuzhu.Login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,13 @@ import android.widget.ScrollView;
 
 import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.Home.MainActivity;
+import com.example.xiaoshoufuzhu.MyApplication;
 import com.example.xiaoshoufuzhu.R;
+import com.example.xiaoshoufuzhu.SettingsAndUsers.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -122,16 +129,54 @@ public class LoginActivity extends AppCompatActivity {
 
     private class LoginTask extends AsyncTask<String, Void, Boolean> {
         private String errorMessage = "";
+        private User loggedInUser;
 
         @Override
         protected Boolean doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
+            Connection connection = null;
+            PreparedStatement statement = null;
+            ResultSet resultSet = null;
+
             try {
-                return DatabaseHelper.validateUser(params[0], params[1]);
-            } catch (Exception e) {
-                errorMessage = e.getMessage();
+                // 1. 验证用户凭证
+                connection = DatabaseHelper.getConnection();
+                String sql = "SELECT password, user_type FROM sales.sales_user WHERE username = ?";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, username);
+                resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    // 2. 密码验证
+                    String storedHash = resultSet.getString("password");
+                    boolean valid = PasswordUtils.checkPassword(password, storedHash);
+
+                    if (valid) {
+                        // 3. 获取完整用户信息（包含权限）
+                        loggedInUser = DatabaseHelper.getUserByUsername(username);
+                        if (loggedInUser == null) {
+                            errorMessage = "用户信息获取失败";
+                            return false;
+                        }
+                        // 4. 记录用户类型用于后续查询
+                        int userType = resultSet.getInt("user_type");
+                        loggedInUser.setUserType(userType);
+                        return true;
+                    }
+                }
+                errorMessage = "用户名或密码错误";
                 return false;
+            } catch (SQLException e) {
+                Log.e("DB", "登录错误: " + e.getMessage());
+                errorMessage = "数据库连接失败";
+                return false;
+            } catch (Exception e) {
+                Log.e("APP", "未知错误: " + e.getMessage());
+                errorMessage = "系统异常";
+                return false;
+            } finally {
+                DatabaseHelper.close(connection, statement, resultSet);
             }
         }
 
@@ -148,9 +193,17 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         private void handleLoginSuccess() {
+            MyApplication.setCurrentUser(loggedInUser);
             String username = edtUsername.getText().toString();
             String successMsg = getString(R.string.login_success, username);
             showToast("\uD83C\uDF89 " + successMsg + " \uD83C\uDF89");
+
+            if (loggedInUser != null && loggedInUser.getPermission() != null) {
+                Log.d("LoginDebug", "用户权限已绑定: " + loggedInUser.getPermission().toString());
+            } else {
+                Log.e("LoginDebug", "⚠️ 用户权限未正确绑定");
+            }
+
 
             SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
             String storedUser = prefs.getString("username", "未找到");

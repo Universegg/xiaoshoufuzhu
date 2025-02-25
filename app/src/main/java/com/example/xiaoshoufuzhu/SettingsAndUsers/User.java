@@ -1,17 +1,18 @@
-package com.example.xiaoshoufuzhu;
+package com.example.xiaoshoufuzhu.SettingsAndUsers;
 
 
 public class User {
-    private int id;             // 用户ID
-    private String username;    // 登录账号
-    private String password;    // 登录密码（通常不序列化）
-    private String name;        // 真实姓名
-    private String sex;         // 性别
-    private Integer age;        // 年龄（使用包装类处理null值）
-    private String email;       // 电子邮箱
-    private String mobile;      // 手机号码
-    private int userType;       // 用户角色类型 0-3
-    private String address;     // 联系地址
+    private int id;                 // 用户ID
+    private String username;        // 登录账号
+    private String password;        // 登录密码（通常不序列化）
+    private String name;            // 真实姓名
+    private String sex;             // 性别
+    private Integer age;            // 年龄（使用包装类处理null值）
+    private String email;           // 电子邮箱
+    private String mobile;          // 手机号码
+    private int userType;           // 用户角色类型 0-3
+    private String address;         // 联系地址
+    private Permission permission;  // 用户权限
 
     public User(int id, String username, String name, String sex,
                 int age, String email, String mobile, int userType) {
@@ -31,6 +32,7 @@ public class User {
         this.mobile = mobile;
         this.userType = userType;
         this.address = address;
+        this.permission = new Permission();
     }
 
     // Getters and Setters
@@ -115,14 +117,21 @@ public class User {
         this.address = address;
     }
 
+    public Permission getPermission() {
+        return permission != null ? permission : new Permission();
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
+    }
 
 
     public String getRoleName() {
         switch (userType) {
             case 0: return "系统管理员";
-            case 1: return "经销商";
-            case 2: return "销售员";
-            case 3: return "采购员";
+            case 1: return "销售员";
+            case 2: return "采购员";
+            case 3: return "经销商";
             default: return "未定义角色";
         }
     }

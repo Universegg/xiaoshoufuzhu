@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.xiaoshoufuzhu.R;
-import com.example.xiaoshoufuzhu.SettingsFragment;
+import com.example.xiaoshoufuzhu.SettingsAndUsers.SettingsFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {

@@ -22,9 +22,9 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.R;
-import com.example.xiaoshoufuzhu.InventoryAdapter;
+import com.example.xiaoshoufuzhu.Inventory.InventoryAdapter;
 import com.example.xiaoshoufuzhu.SalesManagement.adapter.RetailSalesAdapter;
-import com.example.xiaoshoufuzhu.InventoryItem;
+import com.example.xiaoshoufuzhu.Inventory.InventoryItem;
 import com.example.xiaoshoufuzhu.SalesManagement.model.RetailSales;
 
 import java.sql.Connection;

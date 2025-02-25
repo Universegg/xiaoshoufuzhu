@@ -146,7 +146,7 @@
                         android:orientation="vertical"
                         android:layout_marginTop="16dp">
 
-                        <com.example.xiaoshoufuzhu.InfoItemView
+                        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_username"
@@ -154,7 +154,7 @@
                             app:title="登录账号"
                             app:showDivider="true"/>
 
-                        <com.example.xiaoshoufuzhu.InfoItemView
+                        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_sex"
@@ -162,7 +162,7 @@
                             app:title="性别"
                             app:showDivider="true"/>
 
-                        <com.example.xiaoshoufuzhu.InfoItemView
+                        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_age"
@@ -170,7 +170,7 @@
                             app:title="年龄"
                             app:showDivider="true"/>
 
-                        <com.example.xiaoshoufuzhu.InfoItemView
+                        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_email"
@@ -178,7 +178,7 @@
                             app:title="电子邮箱"
                             app:showDivider="true"/>
 
-                        <com.example.xiaoshoufuzhu.InfoItemView
+                        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_mobile"

@@ -1,4 +1,4 @@
-package com.example.xiaoshoufuzhu;
+package com.example.xiaoshoufuzhu.SettingsAndUsers;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -7,9 +7,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.xiaoshoufuzhu.DatabaseHelper;
+import com.example.xiaoshoufuzhu.R;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class SettingsActivity extends AppCompatActivity {

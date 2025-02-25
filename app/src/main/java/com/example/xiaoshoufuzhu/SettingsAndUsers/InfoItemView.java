@@ -1,4 +1,4 @@
-package com.example.xiaoshoufuzhu;
+package com.example.xiaoshoufuzhu.SettingsAndUsers;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
+import com.example.xiaoshoufuzhu.R;
 
 public class InfoItemView extends LinearLayout {
     private ImageView ivIcon;
@@ -104,9 +106,4 @@ public class InfoItemView extends LinearLayout {
         return isEditable ? etValue.getText().toString() : tvValue.getText().toString();
     }
 
-    // 其他辅助方法...
-    public void setIcon(int resId) {
-        ivIcon.setImageResource(resId);
-        ivIcon.setVisibility(VISIBLE);
-    }
 }

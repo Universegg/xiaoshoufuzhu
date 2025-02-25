@@ -5,24 +5,28 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.xiaoshoufuzhu.MyApplication;
+import com.example.xiaoshoufuzhu.SettingsAndUsers.Permission;
 import com.example.xiaoshoufuzhu.PriceLossManagement.PriceLossManagementActivity;
 import com.example.xiaoshoufuzhu.R;
 import com.example.xiaoshoufuzhu.Reports.ReportViewActivity;
 import com.example.xiaoshoufuzhu.SalesManagement.SalesManagementActivity;
-import com.example.xiaoshoufuzhu.SalesPriceAnalysisActivity;
+import com.example.xiaoshoufuzhu.Analysis.SalesPriceAnalysisActivity;
 import com.example.xiaoshoufuzhu.SupplierSalesManagement.SupplierSalesActivity;
+import com.example.xiaoshoufuzhu.SettingsAndUsers.User;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
@@ -68,13 +72,6 @@ public class HomeFragment extends Fragment {
         tvWarning = view.findViewById(R.id.tvWarning);
         weatherWarningCard = view.findViewById(R.id.weatherWarningCard);
 
-        // 设置卡片点击事件
-        cardPriceLoss.setOnClickListener(v -> navigateTo(PriceLossManagementActivity.class));
-        cardSales.setOnClickListener(v -> navigateTo(SalesManagementActivity.class));
-        cardPurchase.setOnClickListener(v -> navigateTo(SupplierSalesActivity.class));
-        cardReport.setOnClickListener(v -> navigateTo(ReportViewActivity.class));
-        cardAnalysis.setOnClickListener(v -> navigateTo(SalesPriceAnalysisActivity.class));
-
         // 天气信息点击监听
         View.OnClickListener weatherClickListener = v -> {
             if (weatherResponse != null) {
@@ -86,7 +83,7 @@ public class HomeFragment extends Fragment {
 
         // 获取天气数据
         fetchWeatherData("上海");
-
+        setupCardPermissions();
         return view;
     }
 
@@ -260,5 +257,79 @@ public class HomeFragment extends Fragment {
             resId = R.drawable.ic_rain;
         }
         imageView.setImageResource(resId);
+    }
+
+    private void setupCardPermissions() {
+        User user = MyApplication.getCurrentUser();
+        if (user == null) {
+            Log.e("Permission", "用户未登录");
+            return;
+        }
+
+        Permission perm = user.getPermission();
+        Log.d("PermissionDebug", "当前用户权限: " +
+                "priceMgr=" + perm.isPriceMgr() +
+                ", saleMgr=" + perm.isSaleMgr() +
+                ", purchaseMgr=" + perm.isPurchaseMgr() +
+                ", tableMgr=" + perm.isTableMgr() +
+                ", anasys=" + perm.isAnasys());
+
+        setupCard(cardPriceLoss, perm.isPriceMgr(), PriceLossManagementActivity.class);
+        setupCard(cardSales, perm.isSaleMgr(), SalesManagementActivity.class);
+        setupCard(cardPurchase, perm.isPurchaseMgr(), SupplierSalesActivity.class);
+        setupCard(cardReport, perm.isTableMgr(), ReportViewActivity.class);
+        setupCard(cardAnalysis, perm.isAnasys(), SalesPriceAnalysisActivity.class);
+    }
+
+    private void setupCard(MaterialCardView card, boolean hasPermission, Class<?> target) {
+        // 禁用点击反馈（如果无权限）
+        card.setClickable(hasPermission);
+        card.setFocusable(hasPermission);
+
+        // 设置颜色（确保颜色资源存在）
+        int colorRes = hasPermission ? R.color.card_enabled : R.color.card_disabled;
+        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), colorRes));
+
+        // 清除旧监听器
+        card.setOnClickListener(null);
+
+        card.setOnClickListener(v -> {
+            if (hasPermission) {
+                navigateTo(target);
+            } else {
+                Log.d("PermissionDebug", "触发无权限点击");
+                showPermissionDialog();
+            }
+        });
+    }
+
+    private int getCardColor(boolean enabled) {
+        return ContextCompat.getColor(requireContext(),
+                enabled ? R.color.card_enabled : R.color.card_disabled);
+    }
+
+    private void showPermissionDialog() {
+        try {
+            if (!isAdded() || isDetached()) { // 检查Fragment状态
+                Log.e("Permission", "Fragment未附加到Activity");
+                return;
+            }
+
+            requireActivity().runOnUiThread(() -> {
+                try {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("权限不足")
+                            .setMessage("您没有权限使用此功能，如果需要请联系管理员\n管理员邮箱：admin@asale.com")
+                            .setPositiveButton("确定", null)
+                            .create()
+                            .show();
+                    Log.d("PermissionDebug", "对话框已显示");
+                } catch (Exception e) {
+                    Log.e("Permission", "显示对话框失败", e);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("Permission", "对话框显示异常", e);
+        }
     }
 }

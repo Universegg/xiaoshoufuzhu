@@ -1,4 +1,4 @@
-package com.example.xiaoshoufuzhu;
+package com.example.xiaoshoufuzhu.Inventory;
 
 public class InventoryItem {
     private int id;

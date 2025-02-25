@@ -13,7 +13,7 @@
 
         <!-- 基本信息 -->
 
-        <com.example.xiaoshoufuzhu.InfoItemView
+        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
             android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
             app:showDivider="true"
             app:title="姓名" />
 
-        <com.example.xiaoshoufuzhu.InfoItemView
+        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_sex"
@@ -29,7 +29,7 @@
             app:icon="@drawable/ic_gender"
             app:showDivider="true"/>
 
-        <com.example.xiaoshoufuzhu.InfoItemView
+        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_age"
@@ -37,7 +37,7 @@
             app:icon="@drawable/ic_age"
             app:showDivider="true"/>
 
-        <com.example.xiaoshoufuzhu.InfoItemView
+        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_email"
@@ -45,7 +45,7 @@
             app:icon="@drawable/ic_email"
             app:showDivider="true"/>
 
-        <com.example.xiaoshoufuzhu.InfoItemView
+        <com.example.xiaoshoufuzhu.SettingsAndUsers.InfoItemView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_mobile"

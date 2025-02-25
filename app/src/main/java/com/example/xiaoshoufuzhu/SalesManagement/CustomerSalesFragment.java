@@ -1,7 +1,5 @@
 package com.example.xiaoshoufuzhu.SalesManagement;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -28,10 +26,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.R;
 import com.example.xiaoshoufuzhu.SalesManagement.adapter.CustomerAdapter;
-import com.example.xiaoshoufuzhu.InventoryAdapter;
+import com.example.xiaoshoufuzhu.Inventory.InventoryAdapter;
 import com.example.xiaoshoufuzhu.SalesManagement.adapter.SalesRecordAdapter;
 import com.example.xiaoshoufuzhu.SalesManagement.model.Customer;
-import com.example.xiaoshoufuzhu.InventoryItem;
+import com.example.xiaoshoufuzhu.Inventory.InventoryItem;
 import com.example.xiaoshoufuzhu.SalesManagement.model.SalesRecord;
 
 import java.sql.Connection;

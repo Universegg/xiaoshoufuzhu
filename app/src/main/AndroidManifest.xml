@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -36,7 +37,7 @@
         </activity>
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".SettingsAndUsers.SettingsActivity"
             android:parentActivityName=".Home.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
@@ -48,7 +49,7 @@
         <activity android:name=".SalesManagement.SalesManagementActivity" />
         <activity android:name=".SupplierSalesManagement.SupplierSalesActivity" />
         <activity android:name=".Reports.ReportViewActivity" />
-        <activity android:name=".SalesPriceAnalysisActivity" />
+        <activity android:name=".Analysis.SalesPriceAnalysisActivity" />
         <activity android:name=".Reports.income.IncomeReportActivity" />
         <activity android:name=".Reports.expense.ExpenseReportActivity" />
         <activity android:name=".Reports.financial.FinancialReportActivity" />
