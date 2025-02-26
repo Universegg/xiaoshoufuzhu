@@ -7,13 +7,14 @@
 
 
     <!-- 标题栏 -->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/primary_green"
-        android:padding="12dp"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:padding="12dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -21,7 +22,7 @@
             android:text="价格与销量分析"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 

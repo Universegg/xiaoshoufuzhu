@@ -9,19 +9,20 @@
     <!-- 标题栏 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="#919f7d"
-        android:orientation="vertical"
-        android:paddingVertical="12dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:text="采购商报表"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- 时间筛选栏 -->

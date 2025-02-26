@@ -9,15 +9,8 @@
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/yu">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            app:srcCompat="@drawable/back" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="#919f7d">
 
         <TextView
             android:id="@+id/tv_title"
@@ -26,7 +19,7 @@
             android:layout_centerInParent="true"
             android:text="销售管理"
             android:textColor="@color/white"
-            android:textSize="16dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -36,7 +29,7 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/yu"
+        android:background="#919f7d"
         style="@style/CustomTabLayout"
         app:tabTextAppearance="@style/CustomTabTextAppearance"
         tools:ignore="MissingClass"

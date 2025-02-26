@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#B28C6F"
+        android:background="@color/primary_green"
         android:orientation="horizontal">
 
         <TextView
@@ -26,7 +26,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:background="@drawable/pullrecord" />
+            android:background="@drawable/pullrecord"
+            android:backgroundTint="@color/white"/>
 
         <TextView
             android:layout_width="wrap_content"

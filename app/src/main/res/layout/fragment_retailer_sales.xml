@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#B28C6F"
+        android:background="@color/primary_green"
         android:orientation="horizontal">
 
         <TextView
@@ -38,7 +38,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#B28C6F"
+        android:background="@color/primary_green"
         android:orientation="horizontal">
 
         <!-- 日期显示和选择 -->
@@ -68,7 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="产品名称"
+            android:text="销售记录"
             android:textStyle="bold"
             android:padding="4dp" />
 

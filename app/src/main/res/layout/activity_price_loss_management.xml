@@ -8,15 +8,8 @@
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/yu">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            app:srcCompat="@drawable/back" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_green">
 
         <TextView
             android:id="@+id/tv_title"
@@ -33,7 +26,7 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/yu"
+        android:background="@color/primary_green"
         style="@style/CustomTabLayout"
         app:tabTextAppearance="@style/CustomTabTextAppearance"
         app:tabMode="fixed"
