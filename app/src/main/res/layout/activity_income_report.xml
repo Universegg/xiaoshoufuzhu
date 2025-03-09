@@ -1,162 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#919f7d"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_title"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#919f7d"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="收入报表"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <!-- 时间段选择器 -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#919f7d"
             android:gravity="center"
-            android:layout_gravity="center"
-            android:layout_centerInParent="true"
-            android:text="收入报表"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:orientation="horizontal">
 
-    </LinearLayout>
-    <!-- 时间段选择器 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#919f7d"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="类别："
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
-        <Spinner
-            android:id="@+id/spinner_time_period"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/time_period_array" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="日期："
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
-
-        <!-- 日期选择按钮 -->
-        <LinearLayout
-            android:layout_width="32dp"
-            android:layout_height="32dp">
-            <ImageView
-                android:id="@+id/ivDatePicker"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/date"
-                android:contentDescription="选择日期" />
-         </LinearLayout>
-    </LinearLayout>
-
-    <!-- 显示实际收入的 TextView -->
-    <TextView
-        android:id="@+id/tvTotalIncome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="实际收入: " />
-
-    <!-- 显示赊账的 TextView -->
-    <TextView
-        android:id="@+id/tvAccountReceivable"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="赊账（未回款）: " />
-
-    <!-- 表头布局 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#e0e0e0"
-        android:padding="8dp">
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:layout_height="wrap_content"
-                android:text="产品名称"
-                android:textStyle="bold"
-                android:textSize="16sp" />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="批号"
+                android:layout_gravity="center"
+                android:text="类别："
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_time_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/time_period_array" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="日期："
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- 日期选择按钮 -->
+            <LinearLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp">
+
+                <ImageView
+                    android:id="@+id/ivDatePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="选择日期"
+                    android:src="@drawable/date" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <!-- 显示实际收入的 TextView -->
+        <TextView
+            android:id="@+id/tvTotalIncome"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="实际收入: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="44dp"
-                android:layout_height="wrap_content"
-                android:text="收入"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        <!-- 显示赊账的 TextView -->
+        <TextView
+            android:id="@+id/tvAccountReceivable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="赊账（未回款）: "
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="44dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="赊账"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
 
-            <TextView
-                android:layout_width="38dp"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:scrollbars="horizontal"
+            android:fillViewport="true">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:layout_margin="16dp"/>
+
+        </HorizontalScrollView>
+
+        <!-- 表头布局 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#e0e0e0"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="详细"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="产品名称"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="批号"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="44dp"
+                    android:layout_height="wrap_content"
+                    android:text="收入"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="44dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="赊账"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="详细"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
         </LinearLayout>
 
+        <!-- 用于显示报表数据的 ListView -->
+        <ListView
+            android:id="@+id/lvIncomeReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp" />
     </LinearLayout>
-
-    <!-- 用于显示报表数据的 ListView -->
-    <ListView
-        android:id="@+id/lvIncomeReport"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
-</LinearLayout>
+</ScrollView>

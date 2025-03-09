@@ -102,15 +102,12 @@
             android:spinnerMode="dropdown"
             android:layout_marginEnd="8dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"/>
+
         <Button
             android:id="@+id/btnSettleAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="一键结算"
             android:layout_marginEnd="8dp"
             android:textColor="@color/white"
@@ -121,8 +118,6 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/add" />

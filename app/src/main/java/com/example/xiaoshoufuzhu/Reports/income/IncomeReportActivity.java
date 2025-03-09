@@ -1,11 +1,15 @@
 package com.example.xiaoshoufuzhu.Reports.income;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -16,6 +20,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
@@ -26,9 +46,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 
 public class IncomeReportActivity extends AppCompatActivity {
 
@@ -41,6 +65,8 @@ public class IncomeReportActivity extends AppCompatActivity {
     private List<IncomeRecord> incomeRecordList;
     private String selectedTimePeriod;
     private Calendar selectedDate;
+    private PieChart pieChart;
+    private BarChart barChart;
 
     private static final String TAG = "IncomeReportActivity";
 
@@ -61,6 +87,8 @@ public class IncomeReportActivity extends AppCompatActivity {
         lvIncomeReport = findViewById(R.id.lvIncomeReport);
         ivDatePicker = findViewById(R.id.ivDatePicker);
         spinnerTimePeriod = findViewById(R.id.spinner_time_period);
+        pieChart = findViewById(R.id.pieChart);
+        barChart = findViewById(R.id.barChart);
     }
 
     private void setupAdapters() {
@@ -265,10 +293,54 @@ public class IncomeReportActivity extends AppCompatActivity {
             }
             tvTotalIncome.setText(String.format("实际收入: %.2f（元）", totalIncome));
             tvAccountReceivable.setText(String.format("赊账（未回款）: %.2f（元）", accountReceivable));
+
             incomeReportAdapter.notifyDataSetChanged();
+            adjustListViewHeight(); // 新增高度调整
+
+            // 新增饼图数据处理逻辑
+            Map<String, Double> productIncomes = new LinkedHashMap<>();
+            List<Map.Entry<String, Double>> sortedEntries = new ArrayList<>();
+
+            // 1. 汇总各产品总收入
+            for (IncomeRecord record : incomeRecordList) {
+                productIncomes.merge(record.getProductName(),
+                        record.getTotalIncome(),
+                        Double::sum);
+            }
+
+            // 2. 过滤零值并按收入排序
+            sortedEntries = productIncomes.entrySet().stream()
+                    .filter(entry -> entry.getValue() > 0)
+                    .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()))
+                    .collect(Collectors.toList());
+
+            // 3. 合并逻辑（当产品数>10时）
+            Map<String, Double> finalData = new LinkedHashMap<>();
+            if (sortedEntries.size() > 10) {
+                // 取前9个主要产品
+                for (int i = 0; i < 9; i++) {
+                    Map.Entry<String, Double> entry = sortedEntries.get(i);
+                    finalData.put(entry.getKey(), entry.getValue());
+                }
+
+                // 合并剩余为"其他"
+                double othersTotal = sortedEntries.subList(9, sortedEntries.size())
+                        .stream()
+                        .mapToDouble(Map.Entry::getValue)
+                        .sum();
+
+                if (othersTotal > 0) {
+                    finalData.put("其他", othersTotal);
+                }
+            } else {
+                sortedEntries.forEach(entry -> finalData.put(entry.getKey(), entry.getValue()));
+            }
+
+            // 4. 传递处理后的数据给饼图
+            setupPieChart(finalData, totalIncome);
+            setupBarChart(finalData);
         });
     }
-
     private void runOnUiThreadIfAlive(Runnable action) {
         if (!isFinishing()) {
             runOnUiThread(() -> {
@@ -292,5 +364,159 @@ public class IncomeReportActivity extends AppCompatActivity {
             this.sql = sql;
             this.params = params;
         }
+    }
+    private void setupPieChart(Map<String, Double> incomeData, double total) {
+        pieChart.setUsePercentValues(true);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setExtraOffsets(5, 10, 5, 5);
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : incomeData.entrySet()) {
+            float percentage = (float) (entry.getValue() / total * 100);
+            entries.add(new PieEntry(percentage, entry.getKey()));
+        }
+
+        // 修正后的颜色初始化
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        for (int color : ColorTemplate.MATERIAL_COLORS) {
+            colors.add(color);
+        }
+        colors.add(Color.parseColor("#9E9E9E"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "产品收入占比");
+        dataSet.setColors(colors);
+        dataSet.setValueTextSize(12f);
+
+        PieData pieData = new PieData(dataSet);
+        pieData.setValueFormatter(new PercentFormatter(pieChart));
+        pieChart.setData(pieData);
+
+        pieChart.animateY(1000);
+        pieChart.invalidate();
+        pieChart.getLegend().setWordWrapEnabled(true); // 图例换行
+        pieChart.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        pieChart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        pieChart.getLegend().setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        pieChart.getLegend().setDrawInside(false);
+        pieChart.getLegend().setXEntrySpace(7f);
+        pieChart.getLegend().setYEntrySpace(0f);
+        pieChart.getLegend().setYOffset(10f);
+
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setEntryLabelTextSize(10f);
+    }
+
+    private void setupBarChart(Map<String, Double> incomeData) {
+        // 基础配置
+        barChart.getDescription().setEnabled(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setPinchZoom(true);
+        barChart.setDoubleTapToZoomEnabled(false);
+        int barWidthDp = 100;
+        int totalWidthDp = (int) (incomeData.size() * barWidthDp * 1.2); // 含间距
+        barChart.getLayoutParams().width = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                totalWidthDp,
+                getResources().getDisplayMetrics()
+        );
+
+        // X轴配置
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
+        xAxis.setLabelCount(incomeData.size(), false); // 禁用强制数量
+        xAxis.setCenterAxisLabels(true); // 标签居中显示
+        xAxis.setAxisMinimum(-0.5f); // 左边界偏移
+        xAxis.setAxisMaximum(incomeData.size() - 0.5f); // 右边界偏移
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(incomeData.keySet().toArray(new String[0])));
+
+        // Y轴配置
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setGranularity(100f);
+        barChart.getAxisRight().setEnabled(false);
+
+        // 数据准备
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        List<Double> values = new ArrayList<>(incomeData.values());
+        for (int i = 0; i < values.size(); i++) {
+            entries.add(new BarEntry(i + 0.5f, values.get(i).floatValue()));
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "产品收入金额（元）");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setValueTextSize(10f);
+        dataSet.setValueFormatter(new LargeValueFormatter());
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.4f);
+        barChart.setData(barData);
+
+        // 动画和刷新
+        barChart.animateY(1000);
+        barChart.invalidate();
+        // 允许水平拖动
+        barChart.setDragEnabled(true);
+        barChart.setScaleXEnabled(true);
+        barChart.setVisibleXRangeMaximum(5); // 默认显示5个柱子
+    }
+
+    // 大数字格式化显示
+    private static class LargeValueFormatter extends ValueFormatter {
+        @Override
+        public String getFormattedValue(float value) {
+            return String.format(Locale.CHINA, "%.0f", value);
+        }
+    }
+
+    // 解决X轴标签显示问题
+    private static class IndexAxisValueFormatter extends ValueFormatter {
+        private final String[] mLabels;
+
+        public IndexAxisValueFormatter(String[] labels) {
+            mLabels = labels;
+        }
+
+        @Override
+        public String getFormattedValue(float value) {
+            int index = (int) value;
+            if (index < 0 || index >= mLabels.length) {
+                return "";
+            }
+            return mLabels[index];
+        }
+    }
+
+    private void adjustListViewHeight() {
+        // 等待布局完成
+        lvIncomeReport.post(() -> {
+            ListAdapter adapter = lvIncomeReport.getAdapter();
+            if (adapter == null) return;
+
+            int totalHeight = 0;
+            final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                    lvIncomeReport.getWidth(), View.MeasureSpec.AT_MOST
+            );
+            final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                    0, View.MeasureSpec.UNSPECIFIED
+            );
+
+            // 计算所有子项高度总和
+            for (int i = 0; i < adapter.getCount(); i++) {
+                View child = adapter.getView(i, null, lvIncomeReport);
+                child.measure(widthMeasureSpec, heightMeasureSpec);
+                totalHeight += child.getMeasuredHeight();
+            }
+
+            // 添加分隔线高度
+            totalHeight += lvIncomeReport.getDividerHeight() * (adapter.getCount() - 1);
+
+            // 设置ListView高度
+            ViewGroup.LayoutParams params = lvIncomeReport.getLayoutParams();
+            params.height = totalHeight;
+            lvIncomeReport.setLayoutParams(params);
+            lvIncomeReport.requestLayout();
+        });
     }
 }

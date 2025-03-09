@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -17,6 +18,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.xiaoshoufuzhu.DatabaseHelper;
 import com.example.xiaoshoufuzhu.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,10 +36,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
 
 
 public class ExpenseReportActivity extends AppCompatActivity {
@@ -41,6 +56,9 @@ public class ExpenseReportActivity extends AppCompatActivity {
     private List<ExpenseRecord> expenseRecords;
     private String selectedTimePeriod;
     private Calendar selectedDate;
+    private PieChart pieChart;
+    private BarChart barChart;
+
 
     private static final String TAG = "ExpenseReportActivity";
 
@@ -61,6 +79,8 @@ public class ExpenseReportActivity extends AppCompatActivity {
         lvExpenseReport = findViewById(R.id.lvExpenseReport);
         ivDatePicker = findViewById(R.id.ivDatePicker);
         spinnerTimePeriod = findViewById(R.id.spinner_time_period);
+        pieChart = findViewById(R.id.pieChart);
+        barChart = findViewById(R.id.barChart);
     }
 
     private void setupAdapters() {
@@ -223,11 +243,42 @@ public class ExpenseReportActivity extends AppCompatActivity {
 
     private void updateUI(List<ExpenseRecord> records, double totalExpense, double totalFreight) {
         runOnUiThreadIfAlive(() -> {
+            // 原有列表更新逻辑
             expenseRecords.clear();
             expenseRecords.addAll(records);
             tvTotalExpense.setText(String.format("总支出: %.2f（元）", totalExpense));
             tvTotalFreight.setText(String.format("总运费: %.2f（元）", totalFreight));
             expenseAdapter.notifyDataSetChanged();
+
+            // 新增图表数据处理
+            Map<String, Double> expenseMap = new HashMap<>();
+            for (ExpenseRecord record : records) {
+                expenseMap.merge(record.getProductName(),
+                        record.getTotalExpense() + record.getFreight(),
+                        Double::sum);
+            }
+
+            // 合并小份额数据
+            List<Map.Entry<String, Double>> sorted = new ArrayList<>(expenseMap.entrySet());
+            sorted.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+            Map<String, Double> finalData = new LinkedHashMap<>();
+            if (sorted.size() > 10) {
+                double others = 0;
+                for (int i = 0; i < 9; i++) {
+                    finalData.put(sorted.get(i).getKey(), sorted.get(i).getValue());
+                }
+                for (int i = 9; i < sorted.size(); i++) {
+                    others += sorted.get(i).getValue();
+                }
+                finalData.put("其他", others);
+            } else {
+                sorted.forEach(e -> finalData.put(e.getKey(), e.getValue()));
+            }
+
+            setupPieChart(finalData, totalExpense + totalFreight);
+            setupBarChart(finalData);
+            adjustListViewHeight();
         });
     }
 
@@ -254,5 +305,59 @@ public class ExpenseReportActivity extends AppCompatActivity {
             this.sql = sql;
             this.params = params;
         }
+    }
+
+    // 新增图表配置方法
+    private void setupPieChart(Map<String, Double> expenseData, double total) {
+        pieChart.setUsePercentValues(true);
+        pieChart.getDescription().setEnabled(false);
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : expenseData.entrySet()) {
+            float percentage = (float) (entry.getValue() / total * 100);
+            entries.add(new PieEntry(percentage, entry.getKey()));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "支出占比");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        PieData pieData = new PieData(dataSet);
+        pieChart.setData(pieData);
+        pieChart.animateY(1000);
+    }
+
+    private void setupBarChart(Map<String, Double> expenseData) {
+        barChart.getDescription().setEnabled(false);
+
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+        int index = 0;
+        for (Map.Entry<String, Double> entry : expenseData.entrySet()) {
+            entries.add(new BarEntry(index++, entry.getValue().floatValue()));
+            labels.add(entry.getKey());
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "支出金额（元）");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        barChart.setData(new BarData(dataSet));
+        barChart.animateY(1000);
+    }
+    private void adjustListViewHeight() {
+        lvExpenseReport.post(() -> {
+            int totalHeight = 0;
+            for (int i = 0; i < expenseAdapter.getCount(); i++) {
+                View item = expenseAdapter.getView(i, null, lvExpenseReport);
+                item.measure(0, 0);
+                totalHeight += item.getMeasuredHeight();
+            }
+
+            ViewGroup.LayoutParams params = lvExpenseReport.getLayoutParams();
+            params.height = totalHeight + (lvExpenseReport.getDividerHeight() * (expenseAdapter.getCount() - 1));
+            lvExpenseReport.setLayoutParams(params);
+        });
     }
 }

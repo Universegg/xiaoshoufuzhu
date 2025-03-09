@@ -392,6 +392,7 @@ public class SalesPriceAnalysisActivity extends AppCompatActivity {
         return values;
     }
 
+    //最小二乘法计算线性回归的斜率
     private float calculateSlope(float[] values) {
         if (values.length < 2) return 0;
         float sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
