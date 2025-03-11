@@ -4,29 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="12dp"
     android:background="@android:color/white">
 
-    <!-- 供应商信息和实收金额 -->
+    <!-- 供应商信息卡片 -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="2dp"
         app:cardCornerRadius="4dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="12dp"
+            android:padding="8dp"
             android:weightSum="2">
 
             <!-- 供应商信息 -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:orientation="vertical">
 
                 <TextView
@@ -40,18 +40,19 @@
                     android:id="@+id/tvSelectedSupplier"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="#212121"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="2dp"/>
             </LinearLayout>
 
             <!-- 实收金额 -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:orientation="vertical"
                 android:gravity="end">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -62,82 +63,86 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="end">
+                    android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="¥"
                         android:textColor="#4CAF50"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="4dp"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
 
                     <EditText
                         android:id="@+id/edtActualAmount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:text="0.00"
                         android:textColor="#4CAF50"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="4dp"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- 输入表单 -->
+    <!-- 输入行1：产品名称 -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="产品名称"
+            android:textSize="14sp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 输入行2：批次号 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
-        android:weightSum="2">
+        android:layout_marginBottom="6dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginEnd="8dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtProductName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="产品名称"
-                android:textSize="16sp"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtBatchNo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="批次号"
-                android:textSize="16sp"/>
+                android:maxLength="16"
+                android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnGenerateBatchNo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/setting"
+            android:layout_marginStart="6dp"/>
     </LinearLayout>
 
+    <!-- 输入行3：数量/单价 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
-        android:weightSum="2">
+        android:layout_marginBottom="6dp">
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginEnd="8dp">
+            android:layout_marginEnd="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtQuantity"
@@ -145,14 +150,15 @@
                 android:layout_height="wrap_content"
                 android:hint="数量"
                 android:inputType="number"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_marginStart="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtUnitPrice"
@@ -160,15 +166,16 @@
                 android:layout_height="wrap_content"
                 android:hint="单价"
                 android:inputType="numberDecimal"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+    <!-- 输入行4：运费 -->
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_marginTop="8dp">
+        android:layout_marginBottom="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtFreight"
@@ -176,47 +183,38 @@
             android:layout_height="wrap_content"
             android:hint="运费"
             android:inputType="numberDecimal"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 应收金额 -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="2dp"
-        app:cardCornerRadius="4dp"
-        android:layout_marginTop="16dp">
+        app:cardElevation="1dp"
+        app:cardCornerRadius="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:layout_weight="1"
+                android:text="应收金额"
+                android:textColor="#757575"
+                android:textSize="14sp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="应收金额"
-                    android:textColor="#757575"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/tvReceivablePrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="¥0.00"
-                    android:textColor="#4CAF50"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="end"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvReceivablePrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¥0.00"
+                android:textColor="#4CAF50"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

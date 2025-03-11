@@ -50,4 +50,5 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.5.3")
     implementation("androidx.preference:preference:1.2.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.belerweb:pinyin4j:2.5.1")
 }

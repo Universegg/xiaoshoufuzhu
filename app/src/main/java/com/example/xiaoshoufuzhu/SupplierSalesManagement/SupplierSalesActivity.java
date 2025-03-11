@@ -26,12 +26,23 @@ import com.example.xiaoshoufuzhu.SupplierSalesManagement.adapter.SupplierAdapter
 import com.example.xiaoshoufuzhu.SupplierSalesManagement.model.PurchaseRecord;
 import com.example.xiaoshoufuzhu.SupplierSalesManagement.model.Supplier;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class SupplierSalesActivity extends AppCompatActivity {
 
@@ -284,12 +295,58 @@ public class SupplierSalesActivity extends AppCompatActivity {
         TextView tvReceivablePrice = dialogView.findViewById(R.id.tvReceivablePrice);
         EditText edtActualAmount = dialogView.findViewById(R.id.edtActualAmount);
         EditText edtFreight = dialogView.findViewById(R.id.edtFreight);
+        Button btnGenerateBatchNo = dialogView.findViewById(R.id.btnGenerateBatchNo);
+
 
         // 初始化修改标志
         boolean[] isAmountModified = {false};
 
         tvSelectedSupplier.setText(selectedSupplier.getName());
 
+        // 生成批号按钮点击事件
+        btnGenerateBatchNo.setOnClickListener(v -> {
+            String productName = edtProductName.getText().toString().trim();
+            if (productName.isEmpty()) {
+                Toast.makeText(this, "请输入产品名称", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            new Thread(() -> {
+                Connection connection = DatabaseHelper.getConnection();
+                try {
+                    // 1. 查询产品或生成新编码
+                    Map<String, Object> codeResult = getProductCode(connection, productName);
+                    String productCode = (String) codeResult.get("code");
+                    boolean isNewProduct = (boolean) codeResult.get("isNew");
+
+                    // 2. 获取最新序列号
+                    int maxSequence = isNewProduct ? 0 : getMaxSequence(connection, productCode);
+                    String newSequence = String.format(Locale.getDefault(), "%03d", maxSequence + 1);
+
+                    // 3. 生成完整批号
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd", Locale.getDefault());
+                    String batchNo = productCode + "-" + sdf.format(new Date()) + "-" + newSequence;
+
+                    runOnUiThread(() -> {
+                        edtBatchNo.setText(batchNo);
+                        // 安全设置光标位置
+                        int safePosition = Math.min(batchNo.length(), edtBatchNo.getText().length());
+                        edtBatchNo.setSelection(safePosition);
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    runOnUiThread(() ->
+                            Toast.makeText(this, "批号生成失败：" + e.getMessage(), Toast.LENGTH_LONG).show());
+                } finally {
+                    try {
+                        if (connection != null) connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        });
         // 金额计算监听器
         TextWatcher calculatorWatcher = new TextWatcher() {
             @Override
@@ -342,6 +399,12 @@ public class SupplierSalesActivity extends AppCompatActivity {
                         double unitPrice = Double.parseDouble(edtUnitPrice.getText().toString());
                         double freight = Double.parseDouble(edtFreight.getText().toString());
                         double actualAmount = Double.parseDouble(edtActualAmount.getText().toString());
+
+                        // 校验批号格式（新规则：XXX-231115-001）
+                        if (!isValidBatchNo(batchNo)) {
+                            Toast.makeText(this, "批号格式错误！示例：P100-231115-001", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         if (productName.isEmpty() || batchNo.isEmpty()) {
                             Toast.makeText(this, "请输入产品名称和批次号", Toast.LENGTH_SHORT).show();
@@ -474,4 +537,78 @@ public class SupplierSalesActivity extends AppCompatActivity {
             }
         }).start();
     }
+    // 校验批号格式方法
+    private boolean isValidBatchNo(String batchNo) {
+        // 格式：产品编码-6位日期-3位序号（如 P100-231115-001）
+        String regex = "^[A-Za-z0-9]+-\\d{6}-\\d{3}$";
+        return batchNo.matches(regex);
+    }
+
+    private Map<String, Object> getProductCode(Connection connection, String productName) throws SQLException {
+        Map<String, Object> result = new HashMap<>();
+
+        // 尝试查询现有产品
+        String query = "SELECT num FROM products WHERE name = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, productName);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                result.put("code", rs.getString("num"));
+                result.put("isNew", false);
+            } else {
+                // 生成新编码：中文转拼音首字母+数字
+                String pinyin = convertToPinyinCode(productName);
+                result.put("code", generateNewCode(pinyin));
+                result.put("isNew", true);
+            }
+        }
+        return result;
+    }
+
+    private int getMaxSequence(Connection connection, String productCode) throws SQLException {
+        String query = "SELECT MAX(CAST(SUBSTRING_INDEX(num, '-', -1) AS UNSIGNED)) " +
+                "FROM records_suppliers WHERE num LIKE ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, productCode + "-%");
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+    // 中文转拼音处理
+    private String convertToPinyinCode(String chinese) {
+        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+        format.setCaseType(HanyuPinyinCaseType.UPPERCASE);
+        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+
+        StringBuilder code = new StringBuilder();
+        for (char c : chinese.toCharArray()) {
+            if (Character.toString(c).matches("[\\u4E00-\\u9FA5]")) {
+                try {
+                    String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c, format);
+                    if (pinyin != null && pinyin.length > 0) {
+                        code.append(pinyin[0].charAt(0)); // 只取首字母
+                    }
+                } catch (BadHanyuPinyinOutputFormatCombination e) {
+                    code.append('X'); // 异常字符替换为X
+                }
+            } else if (Character.isLetter(c)) { // 仅保留字母
+                code.append(Character.toUpperCase(c));
+            }
+        }
+        return code.toString();
+    }
+    private String generateNewCode(String rawCode) {
+        // 规范编码格式：字母开头，总长4位
+        String cleanCode = rawCode.replaceAll("[^A-Z]", "");
+        // 处理空值情况
+        if (cleanCode.isEmpty()) return "AAA";
+
+        // 确保3位字母：不足补A，超长截断
+        return cleanCode.length() >= 3 ?
+                cleanCode.substring(0, 3) :
+                String.format("%-3s", cleanCode).replace(' ', 'A');
+
+    }
+    
 }
