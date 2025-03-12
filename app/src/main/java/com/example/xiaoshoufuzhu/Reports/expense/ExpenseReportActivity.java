@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -347,17 +348,35 @@ public class ExpenseReportActivity extends AppCompatActivity {
         barChart.animateY(1000);
     }
     private void adjustListViewHeight() {
+        // 等待布局完成
         lvExpenseReport.post(() -> {
+            ListAdapter adapter = lvExpenseReport.getAdapter();
+            if (adapter == null) return;
+
             int totalHeight = 0;
-            for (int i = 0; i < expenseAdapter.getCount(); i++) {
-                View item = expenseAdapter.getView(i, null, lvExpenseReport);
-                item.measure(0, 0);
-                totalHeight += item.getMeasuredHeight();
+            // 使用正确的测量规格
+            final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                    lvExpenseReport.getWidth(), View.MeasureSpec.AT_MOST
+            );
+            final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                    0, View.MeasureSpec.UNSPECIFIED
+            );
+
+            // 计算所有子项高度总和
+            for (int i = 0; i < adapter.getCount(); i++) {
+                View child = adapter.getView(i, null, lvExpenseReport);
+                child.measure(widthMeasureSpec, heightMeasureSpec);
+                totalHeight += child.getMeasuredHeight();
             }
 
+            // 添加分隔线高度（项数-1）
+            totalHeight += lvExpenseReport.getDividerHeight() * (adapter.getCount() - 1);
+
+            // 设置ListView高度
             ViewGroup.LayoutParams params = lvExpenseReport.getLayoutParams();
-            params.height = totalHeight + (lvExpenseReport.getDividerHeight() * (expenseAdapter.getCount() - 1));
+            params.height = totalHeight;
             lvExpenseReport.setLayoutParams(params);
+            lvExpenseReport.requestLayout(); // 请求重新布局
         });
     }
 }
